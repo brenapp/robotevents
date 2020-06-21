@@ -3,7 +3,7 @@
  * In the future this may support EP accounts, but for now we're only supporting the read only API
  */
 
-import * as parse from "set-cookie-parser";
+import { parse } from "set-cookie-parser";
 
 export let COOKIE = "";
 
@@ -24,7 +24,7 @@ export default async function authenticate() {
   const re_session = cookie.find((c) => c.name === "re_session");
   setTimeout(() => {
     COOKIE = "";
-  }, re_session.maxAge);
+  }, re_session?.maxAge || 0);
 
   return (COOKIE = cookie.map((c) => `${c.name}=${c.value}`).join("; "));
 }
