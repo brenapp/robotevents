@@ -20,3 +20,7 @@ export function ready() {
     );
   }
 }
+
+export function updateCurrent(n: number) {
+  CURRENT = n;
+}
