@@ -30,7 +30,7 @@ export async function all() {
   return request<Program>("programs", {});
 }
 
-type ProgramAbbr =
+export type ProgramAbbr =
   | "VRC"
   | "VEXU"
   | "WORKSHOP"
@@ -40,7 +40,9 @@ type ProgramAbbr =
   | "NRL"
   | "RAD"
   | "TVCR"
-  | "TIQC";
+  | "TIQC"
+  | "VAIC-HS"
+  | "VAIC-U";
 
 const programs: { [T in ProgramAbbr]: number } = {
   VRC: 1,
@@ -53,6 +55,8 @@ const programs: { [T in ProgramAbbr]: number } = {
   RAD: 44,
   TVCR: 46,
   TIQC: 47,
+  "VAIC-HS": 48,
+  "VAIC-U": 49,
 };
 
 export function get(abbr: ProgramAbbr) {
