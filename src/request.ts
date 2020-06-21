@@ -10,7 +10,7 @@
 
 import fetch from "node-fetch";
 import * as keya from "keya";
-import { ready } from "./ratelimit";
+import { ready, updateCurrent } from "./ratelimit";
 import { PageMeta } from "./schema";
 import authenticate, { COOKIE } from "./authentication";
 
@@ -53,7 +53,9 @@ export interface CacheEntry<T = unknown> {
   value: T[];
 }
 
-async function doRequest(url: URL) {
+async function doRequest<T = unknown>(
+  url: URL
+): Promise<{ meta: PageMeta; data: T[] }> {
   // Authenticate if we haven't already
   if (!COOKIE) {
     await authenticate();
@@ -74,6 +76,13 @@ async function doRequest(url: URL) {
   if (response.status === 302) {
     await authenticate();
     return doRequest(url);
+  }
+
+  // Set the new ratelimit
+  if (response.headers.has("x-ratelimit-remaining")) {
+    updateCurrent(
+      parseInt(response.headers.get("x-ratelimit-remaining") as string)
+    );
   }
 
   // If the response errored tell us
@@ -98,23 +107,25 @@ export default async function request<T = unknown>(
 
   // See if the store has a non-stale instance of this href
   const cached = await store.get(url.href);
-  if (cached && cached.expires < Date.now()) {
+  console.log(cached);
+  if (cached && cached.expires > Date.now()) {
+    console.log("-> Cache Value");
     return cached.value;
   }
 
   // Now get the inital request
-  let page: { meta: PageMeta; data: T[] } = await doRequest(url);
+  let page = await doRequest<T>(url);
   let data = page.data;
 
   // Paginate if needed
   while (page.meta.current_page < page.meta.last_page) {
     url.searchParams.set("page", (page.meta.current_page + 1).toString());
-    page = await doRequest(url);
+    page = await doRequest<T>(url);
 
     data.push(...page.data);
   }
 
-  // Delete the page key (cause pagination is abstracted over in cache)
+  // Delete pagination keys
   url.searchParams.delete("page");
 
   // Set the cache value (expires in 4 minutes when robotevents updates)
