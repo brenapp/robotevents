@@ -11,7 +11,6 @@
 import fetch from "node-fetch";
 import * as keya from "keya";
 import { ready, updateCurrent } from "./ratelimit";
-import { PageMeta } from "./schema";
 import authenticate, { COOKIE } from "./authentication";
 
 export interface RobotEventsRequest {
