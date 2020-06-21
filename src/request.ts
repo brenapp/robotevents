@@ -45,7 +45,7 @@ function serialize(params: RobotEventsRequest): string {
   }
 
   // Remove the last amperstand and return
-  return body.slice(0, body.length);
+  return body.slice(0, body.length - 1);
 }
 
 export interface CacheEntry<T = unknown> {
@@ -106,10 +106,8 @@ export default async function request<T = unknown>(
   url.search = serialize({ per_page: 250, ...params });
 
   // See if the store has a non-stale instance of this href
-  const cached = await store.get(url.href);
-  console.log(cached);
+  const cached = await store.get(decodeURI(url.href));
   if (cached && cached.expires > Date.now()) {
-    console.log("-> Cache Value");
     return cached.value;
   }
 
@@ -129,7 +127,7 @@ export default async function request<T = unknown>(
   url.searchParams.delete("page");
 
   // Set the cache value (expires in 4 minutes when robotevents updates)
-  await store.set(url.href, {
+  await store.set(decodeURI(url.href), {
     expires: Date.now() + 4 * 60 * 1000,
     value: data,
   });
