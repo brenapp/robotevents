@@ -5,7 +5,13 @@
 import request from "../../util/request";
 import { EventData } from ".";
 
-export type Level = "World" | "National" | "State" | "Signature" | "Other";
+export type Level =
+  | "World"
+  | "National"
+  | "State"
+  | "Signature"
+  | "Regional"
+  | "Other";
 
 export interface SearchOptions {
   id?: number[];
