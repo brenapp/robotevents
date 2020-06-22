@@ -1,4 +1,4 @@
-import { IdInfo } from "..";
+import { IdInfo } from ".";
 
 export interface Award {
   id: number;
@@ -15,7 +15,7 @@ export interface Award {
   individualWinners: string[];
 }
 
-export interface AwardOptions {
+export interface AwardOptionsFromEvent {
   team?: number[];
   winner?: string[];
 }
