@@ -24,7 +24,7 @@ export default async function authenticate() {
   const re_session = cookie.find((c) => c.name === "re_session");
   setTimeout(() => {
     COOKIE = "";
-  }, re_session?.maxAge || 0);
+  }, (re_session?.maxAge || 0) * 1000);
 
   return (COOKIE = cookie.map((c) => `${c.name}=${c.value}`).join("; "));
 }
