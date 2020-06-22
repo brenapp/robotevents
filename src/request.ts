@@ -108,7 +108,7 @@ async function doRequest<T = unknown>(
 
 export default async function request<T = unknown>(
   endpoint: string,
-  params: RobotEventsRequest
+  params: object
 ): Promise<T[]> {
   const store = await keya.store<CacheEntry<T>>("robotevents");
 
