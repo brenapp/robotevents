@@ -198,6 +198,37 @@ export class Event extends Watchable<EventData> implements EventData {
   }
 
   /**
+   *
+   * @param division Division ID
+   * @param options Ranking Search Options
+   *
+   * (VEX IQ only)
+   * Gets the finalist rankings for an event
+   *
+   * For rankings, you want to use "add" as your primary event if listening, as it will be issued on any update (basically every time matches are entered into Tournament Manager)
+   *
+   * @example
+   * const event = await robotevents.events.get(sku);
+   * const rankings = await event.finalistRankings(1, { rank: [1] });
+   * rankings.watch();
+   *
+   * ranking.on("add", rank => {
+   *  console.log("First Place Rank Update", rank);
+   * });
+   *
+   *
+   */
+  finalistRankings(division: number, options: RankingOptionsFromEvent = {}) {
+    return WatchableCollection.create(() =>
+      request<Ranking>(
+        `events/${this.id}/divisions/${division}/finalistRankings`,
+        options,
+        0
+      )
+    );
+  }
+
+  /**
    * Gets teams at an event
    * @param options Search Options
    *
