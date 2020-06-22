@@ -2,7 +2,7 @@
  * Searching/Filtering events
  */
 
-import request from "../../request";
+import request from "../../util/request";
 import { EventData } from ".";
 
 export type Level = "World" | "National" | "State" | "Signature" | "Other";

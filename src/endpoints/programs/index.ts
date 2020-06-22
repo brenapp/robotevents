@@ -5,7 +5,7 @@
  * Instead they will probably rely on the default export, which returns IDs from abbreviations
  *
  */
-import request from "../../request";
+import request from "../../util/request";
 
 export interface Program {
   id: number;

@@ -3,7 +3,7 @@
  */
 
 import { ProgramAbbr } from "../programs";
-import request from "../../request";
+import request from "../../util/request";
 
 export interface Season {
   id: number;

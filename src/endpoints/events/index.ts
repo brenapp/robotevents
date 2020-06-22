@@ -3,7 +3,7 @@
  */
 
 import search, { Level } from "./search";
-import request from "../../request";
+import request from "../../util/request";
 import { EventEmitter } from "events";
 
 export interface EventData {
@@ -89,13 +89,16 @@ export class Event implements EventData {
   ongoing = false;
   awards_finalized = false;
 
-  // Loads the event with the ID
+  // Load the event
   constructor(data: EventData) {
     for (const [key, value] of Object.entries(data)) {
       // @ts-ignore
       this[key] = value;
     }
   }
+
+  // Get the event's team
+  teams() {}
 }
 
 export default async function get(sku: string) {
