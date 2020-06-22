@@ -3,7 +3,7 @@
  */
 
 import request from "../../util/request";
-import { EventData } from ".";
+import { EventData, Event } from ".";
 
 export type Level =
   | "World"
@@ -24,5 +24,7 @@ export interface SearchOptions {
 }
 
 export default async function search(options: SearchOptions) {
-  return request<EventData>("events", options);
+  return request<EventData>("events", options).then((results) =>
+    results.map((data) => new Event(data))
+  );
 }

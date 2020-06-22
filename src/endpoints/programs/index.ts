@@ -62,5 +62,3 @@ const programs: { [T in ProgramAbbr]: number } = {
 export function get(abbr: ProgramAbbr) {
   return programs[abbr] ?? 0;
 }
-
-export default get;

@@ -121,7 +121,7 @@ export class Event extends Watchable<EventData> implements EventData {
    *  - Award Qualification Changed
    *
    * @example
-   * const event = await robotevents.event(sku);
+   * const event = await robotevents.events.get(sku);
    * const awards = await event.matches(1);
    *
    * for (const award of awards) {
@@ -177,7 +177,7 @@ export class Event extends Watchable<EventData> implements EventData {
    * For rankings, you want to use "add" as your primary event if listening, as it will be issued on any update (basically every time matches are entered into Tournament Manager)
    *
    * @example
-   * const event = await robotevents.event(sku);
+   * const event = await robotevents.events.get(sku);
    * const rankings = await event.rankings(1, { rank: [1] });
    * rankings.watch();
    *
@@ -202,7 +202,7 @@ export class Event extends Watchable<EventData> implements EventData {
    * @param options Search Options
    *
    * @example Basic Usage
-   * const event = await robotevents.event(sku);
+   * const event = await robotevents.events.get(sku);
    * const teams = await event.teams();
    *
    * for (const team of teams) {
@@ -230,7 +230,7 @@ export class Event extends Watchable<EventData> implements EventData {
   }
 }
 
-export default async function get(skuOrID: string | number) {
+export async function get(skuOrID: string | number) {
   const events: EventData[] = [];
 
   if (typeof skuOrID == "string") {
@@ -245,3 +245,5 @@ export default async function get(skuOrID: string | number) {
 
   return new Event(events[0]);
 }
+
+export { default as search } from "./search";

@@ -159,7 +159,7 @@ const seasons: {
  * @param program Program
  * @param year Year
  */
-export default function get(program: ProgramAbbr, year: Year) {
+export function get(program: ProgramAbbr, year: Year) {
   return seasons[program][year];
 }
 
