@@ -4,8 +4,8 @@
 
 import search, { Level } from "./search";
 import request from "../../util/request";
-import { EventEmitter } from "events";
 import WatchableCollection from "../../WatchableCollection";
+import { Award, AwardOptions } from "./award";
 
 export interface EventData {
   id: number;
@@ -96,6 +96,13 @@ export class Event implements EventData {
       // @ts-ignore
       this[key] = value;
     }
+  }
+
+  // Watchable Collections
+  awards(options: AwardOptions = {}) {
+    return WatchableCollection.create(() =>
+      request<Award>(`events/${this.id}/awards`, options, true)
+    );
   }
 }
 
