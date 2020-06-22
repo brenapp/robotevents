@@ -6,7 +6,9 @@ export let MAX = 1080;
 export let CURRENT = 1080;
 
 /**
- * Convience method, awaits ratelimit readyness
+ * Resolves when you are ok to make requests
+ * If you are within your ratelimit, this will resolve immediately
+ * Otherwise, it will wait until the ratelimit is refreshed
  */
 export function ready() {
   // We still have requests this minute
@@ -21,6 +23,18 @@ export function ready() {
   }
 }
 
+/**
+ * (For internal use)
+ * Updates the current ratelimit usage
+ * @param n
+ */
 export function updateCurrent(n: number) {
   CURRENT = n;
+}
+
+/**
+ * If it is ok to make a request right now (we still have some ratelimit for this minute)
+ */
+export function ok() {
+  return CURRENT > 0;
 }
