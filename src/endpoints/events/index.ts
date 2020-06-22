@@ -8,7 +8,7 @@ import WatchableCollection from "../../WatchableCollection";
 import { Award, AwardOptionsFromEvent } from "../award";
 import { MatchOptionsFromEvent, Match } from "../matches";
 import { RankingOptionsFromEvent, Ranking } from "../rankings";
-import Team, { TeamOptionsFromEvent, TeamData } from "../team";
+import Team, { TeamOptionsFromEvent, TeamData } from "../teams";
 import Watchable from "../../Watchable";
 
 export interface EventData {
