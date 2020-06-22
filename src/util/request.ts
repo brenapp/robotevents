@@ -108,7 +108,8 @@ async function doRequest<T = unknown>(
 
 export default async function request<T = unknown>(
   endpoint: string,
-  params: object
+  params: object,
+  bypassCache = false
 ): Promise<T[]> {
   const store = await keya.store<CacheEntry<T>>("robotevents");
 
@@ -120,7 +121,7 @@ export default async function request<T = unknown>(
 
   // See if the store has a non-stale instance of this href
   const cached = await store.get(decodeURI(url.href));
-  if (cached && cached.expires > Date.now()) {
+  if (cached && cached.expires > Date.now() && !bypassCache) {
     return cached.value;
   }
 
@@ -139,11 +140,13 @@ export default async function request<T = unknown>(
   // Delete pagination keys
   url.searchParams.delete("page");
 
-  // Set the cache value (expires in 4 minutes when robotevents updates)
-  await store.set(decodeURI(url.href), {
-    expires: Date.now() + 4 * 60 * 1000,
-    value: data,
-  });
+  if (!bypassCache) {
+    // Set the cache value (expires in 4 minutes when robotevents updates)
+    await store.set(decodeURI(url.href), {
+      expires: Date.now() + 4 * 60 * 1000,
+      value: data,
+    });
+  }
 
   return data;
 }
