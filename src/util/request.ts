@@ -11,7 +11,7 @@
 import fetch from "node-fetch";
 import * as keya from "keya";
 import { ready, updateCurrent } from "./ratelimit";
-import authenticate, { COOKIE } from "./authentication";
+import { authenticate, COOKIE } from "./authentication";
 
 export interface RobotEventsRequest {
   [key: string]: string | string[] | number | number[];
