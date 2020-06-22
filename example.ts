@@ -13,4 +13,8 @@ const ChangeUp = [
   const events = await robotevents.events.search({
     season: ChangeUp,
   });
+
+  for (const event of events) {
+    console.log(`${event.name} in ${event.location.country}`);
+  }
 })();
