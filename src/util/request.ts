@@ -48,7 +48,7 @@ function serialize(params: RobotEventsRequest): string {
 }
 
 export interface CacheEntry<T = unknown> {
-  expires: number;
+  created: number;
   value: T[];
 }
 
@@ -109,7 +109,7 @@ async function doRequest<T = unknown>(
 export default async function request<T = unknown>(
   endpoint: string,
   params: object,
-  bypassCache = false
+  maxAge = Infinity
 ): Promise<T[]> {
   const store = await keya.store<CacheEntry<T>>("robotevents");
 
@@ -121,8 +121,12 @@ export default async function request<T = unknown>(
 
   // See if the store has a non-stale instance of this href
   const cached = await store.get(decodeURI(url.href));
-  if (cached && cached.expires > Date.now() && !bypassCache) {
-    return cached.value;
+  if (cached) {
+    const age = Date.now() - cached.created;
+
+    if (age <= maxAge) {
+      return cached.value;
+    }
   }
 
   // Now get the inital request
@@ -140,13 +144,11 @@ export default async function request<T = unknown>(
   // Delete pagination keys
   url.searchParams.delete("page");
 
-  if (!bypassCache) {
-    // Set the cache value (expires in 4 minutes when robotevents updates)
-    await store.set(decodeURI(url.href), {
-      expires: Date.now() + 4 * 60 * 1000,
-      value: data,
-    });
-  }
+  // Set the cache value
+  await store.set(decodeURI(url.href), {
+    created: Date.now(),
+    value: data,
+  });
 
   return data;
 }

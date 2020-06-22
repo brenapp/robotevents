@@ -131,7 +131,7 @@ export class Event extends Watchable<EventData> implements EventData {
    */
   awards(options: AwardOptionsFromEvent = {}) {
     return WatchableCollection.create(() =>
-      request<Award>(`events/${this.id}/awards`, options, true)
+      request<Award>(`events/${this.id}/awards`, options, 0)
     );
   }
 
@@ -164,7 +164,7 @@ export class Event extends Watchable<EventData> implements EventData {
       request<Match>(
         `events/${this.id}/divisions/${division}/matches`,
         options,
-        true
+        0
       )
     );
   }
@@ -192,7 +192,7 @@ export class Event extends Watchable<EventData> implements EventData {
       request<Ranking>(
         `events/${this.id}/divisions/${division}/rankings`,
         options,
-        true
+        0
       )
     );
   }
@@ -223,11 +223,9 @@ export class Event extends Watchable<EventData> implements EventData {
    */
   teams(options: TeamOptionsFromEvent = {}) {
     return WatchableCollection.create(() =>
-      request<TeamData>(
-        `events/${this.id}/teams`,
-        options,
-        true
-      ).then((teams) => teams.map((data) => new Team(data)))
+      request<TeamData>(`events/${this.id}/teams`, options, 0).then((teams) =>
+        teams.map((data) => new Team(data))
+      )
     );
   }
 }
