@@ -9,12 +9,21 @@ export interface Alliance {
   }[];
 }
 
+export enum Round {
+  Practice = 1,
+  Qualification = 2,
+  Quarterfinals = 3,
+  Semifinals = 4,
+  Finals = 5,
+  RoundOf16 = 6,
+}
+
 export interface Match {
   id: number;
   event: IdInfo;
   division: IdInfo;
 
-  round: number;
+  round: Round;
   instance: number;
   matchnum: number;
 
@@ -26,4 +35,12 @@ export interface Match {
   name: string;
 
   alliances: Alliance[];
+}
+
+export interface MatchOptionsFromEvent {
+  team?: number[];
+
+  round?: Round[];
+  instance?: number[];
+  matchnum?: number[];
 }

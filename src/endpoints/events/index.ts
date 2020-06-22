@@ -5,7 +5,8 @@
 import search, { Level } from "./search";
 import request from "../../util/request";
 import WatchableCollection from "../../WatchableCollection";
-import { Award, AwardOptions } from "./award";
+import { Award, AwardOptionsFromEvent } from "../award";
+import { MatchOptionsFromEvent, Match } from "../matches";
 
 export interface EventData {
   id: number;
@@ -99,11 +100,33 @@ export class Event implements EventData {
   }
 
   // Watchable Collections
-  awards(options: AwardOptions = {}) {
+
+  /**
+   * Gets the awards for the event, returns a watchable collection
+   * @param options Award Search Options
+   */
+  awards(options: AwardOptionsFromEvent = {}) {
     return WatchableCollection.create(() =>
       request<Award>(`events/${this.id}/awards`, options, true)
     );
   }
+
+  /**
+   * Gets the matches for an event, returns a watchable collection
+   * @param division Division ID
+   * @param options Match Search Options
+   */
+  matches(division: number, options: MatchOptionsFromEvent = {}) {
+    return WatchableCollection.create(() =>
+      request<Match>(
+        `events/${this.id}/divisions/${division}/matches`,
+        options,
+        true
+      )
+    );
+  }
+
+  rankings(division: number) {}
 }
 
 export default async function get(skuOrID: string | number) {
