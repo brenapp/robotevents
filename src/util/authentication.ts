@@ -9,7 +9,13 @@ export let COOKIE = "";
 
 import fetch from "node-fetch";
 
-export default async function authenticate() {
+/**
+ * Automatically authenticates
+ *
+ * This function will perform a request to https://www.robotevents.com to get a re_session cookie with which to perform requests
+ * Note: This function is automatically called when it is required
+ */
+export async function authenticate() {
   const response = await fetch("https://www.robotevents.com");
 
   if (!response.ok) {
@@ -26,5 +32,9 @@ export default async function authenticate() {
     COOKIE = "";
   }, (re_session?.maxAge || 0) * 1000);
 
-  return (COOKIE = cookie.map((c) => `${c.name}=${c.value}`).join("; "));
+  return setCookie(cookie.map((c) => `${c.name}=${c.value}`).join("; "));
+}
+
+export function setCookie(cookie: string) {
+  return (COOKIE = cookie);
 }
