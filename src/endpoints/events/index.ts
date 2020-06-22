@@ -5,6 +5,7 @@
 import search, { Level } from "./search";
 import request from "../../util/request";
 import { EventEmitter } from "events";
+import WatchableCollection from "../../WatchableCollection";
 
 export interface EventData {
   id: number;
@@ -96,16 +97,19 @@ export class Event implements EventData {
       this[key] = value;
     }
   }
-
-  // Get the event's team
-  teams() {}
 }
 
-export default async function get(sku: string) {
-  const events = await search({ sku: [sku] });
+export default async function get(skuOrID: string | number) {
+  const events: EventData[] = [];
+
+  if (typeof skuOrID == "string") {
+    events.push(...(await search({ sku: [skuOrID] })));
+  } else if (typeof skuOrID) {
+    events.push(...(await search({ id: [skuOrID] })));
+  }
 
   if (events.length < 1) {
-    return Promise.reject(new Error(`No event with SKU ${sku}`));
+    return Promise.reject(new Error(`No event with SKU/ID ${skuOrID}`));
   }
 
   return new Event(events[0]);
