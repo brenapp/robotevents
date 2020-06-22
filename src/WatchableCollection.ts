@@ -106,7 +106,7 @@ export default class WatchableCollection<T> extends EventEmitter
     }
   }
 
-  [Symbol.iterator] = this.contents[Symbol.iterator].bind(this.contents);
+  [Symbol.iterator] = this.values;
   [Symbol.toStringTag] = "WatchableCollection";
 
   // Watching
