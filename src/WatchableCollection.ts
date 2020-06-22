@@ -8,6 +8,26 @@
 
 import { EventEmitter } from "events";
 
+interface WatchableCollectionEvents<T> {
+  add: (item: T) => void;
+  remove: (item: T) => void;
+}
+
+export default interface WatchableCollection<T> {
+  on<U extends keyof WatchableCollectionEvents<T>>(
+    event: U,
+    listener: WatchableCollectionEvents<T>[U]
+  ): this;
+  once<U extends keyof WatchableCollectionEvents<T>>(
+    event: U,
+    listener: WatchableCollectionEvents<T>[U]
+  ): this;
+  off<U extends keyof WatchableCollectionEvents<T>>(
+    event: U,
+    listener: WatchableCollectionEvents<T>[U]
+  ): this;
+}
+
 export default class WatchableCollection<T> extends EventEmitter
   implements Set<T> {
   // Holds all of contents of the collection
@@ -74,18 +94,20 @@ export default class WatchableCollection<T> extends EventEmitter
   }
 
   // Iteration
-  keys() {
-    return this.contents.keys();
+  *keys() {
+    for (const item of this.contents) {
+      yield item;
+    }
   }
-  values() {
-    return this.contents.values();
-  }
-  entries() {
-    return this.contents.entries();
+  values = this.keys;
+  *entries() {
+    for (const item of this.contents) {
+      yield [item, item] as [T, T];
+    }
   }
 
-  [Symbol.iterator] = this.contents[Symbol.iterator];
-  [Symbol.toStringTag] = this.contents[Symbol.toStringTag];
+  [Symbol.iterator] = this.contents[Symbol.iterator].bind(this.contents);
+  [Symbol.toStringTag] = "WatchableCollection";
 
   // Watching
   watch(frequency?: number) {
