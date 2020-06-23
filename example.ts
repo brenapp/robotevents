@@ -10,6 +10,11 @@ const ChangeUp = [
 
 // Get all change up events
 (async function () {
+  const team = await robotevents.teams.get("BCUZ");
+  const matches = await team.matches();
+
+  console.log(matches.size);
+
   const events = await robotevents.events.search({
     season: ChangeUp,
   });
