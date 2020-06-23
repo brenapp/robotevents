@@ -10,6 +10,7 @@ import { MatchOptionsFromEvent, Match } from "../matches";
 import { RankingOptionsFromEvent, Ranking } from "../rankings";
 import Team, { TeamOptionsFromEvent, TeamData } from "../teams";
 import Watchable from "../../Watchable";
+import { Skill, SkillsOptionsFromEvent } from "../skills";
 
 export interface EventData {
   id: number;
@@ -112,6 +113,62 @@ export class Event extends Watchable<EventData> implements EventData {
   // Watchable Collections
 
   /**
+   * Gets teams at an event
+   * @param options Search Options
+   *
+   * @example Basic Usage
+   * const event = await robotevents.events.get(sku);
+   * const teams = await event.teams();
+   *
+   * for (const team of teams) {
+   *  console.log(team);
+   * }
+   *
+   * @example Watch for Team Changes
+   * teams.watch();
+   *
+   * teams.on("add", team => {
+   *  console.log("Team added", team);
+   * })
+   *
+   * teams.on("remove", team => {
+   *  console.log("Team removed", team);
+   * });
+   *
+   */
+  teams(options: TeamOptionsFromEvent = {}) {
+    return WatchableCollection.create(() =>
+      request<TeamData>(`events/${this.id}/teams`, options, 0).then((teams) =>
+        teams.map((data) => new Team(data))
+      )
+    );
+  }
+
+  /**
+   * Gets skills data at an event, as a watchable collection
+   * @param options Skills Options
+   *
+   * @example
+   * const event = await robotevents.events.get(sku);
+   * const skills = await event.skills({
+   *  type: ["driver"]
+   * });
+   *
+   * for (const run of skills) {
+   *  console.log(run);
+   * }
+   *
+   * skills.watch();
+   * skills.on("add", console.log)
+   *
+   */
+  skills(options: SkillsOptionsFromEvent = {}) {
+    return WatchableCollection.create(() =>
+      request<Skill>(`events/${this.id}/skills`, options, 0)
+    );
+  }
+
+  /**
    * Gets the awards for the event, returns a watchable collection
    * @param options Award Search Options
    *
@@ -174,34 +231,6 @@ export class Event extends Watchable<EventData> implements EventData {
    * @param division Division ID
    * @param options Ranking Search Options
    *
-   * For rankings, you want to use "add" as your primary event if listening, as it will be issued on any update (basically every time matches are entered into Tournament Manager)
-   *
-   * @example
-   * const event = await robotevents.events.get(sku);
-   * const rankings = await event.rankings(1, { rank: [1] });
-   * rankings.watch();
-   *
-   * ranking.on("add", rank => {
-   *  console.log("First Place Rank Update", rank);
-   * });
-   *
-   *
-   */
-  rankings(division: number, options: RankingOptionsFromEvent = {}) {
-    return WatchableCollection.create(() =>
-      request<Ranking>(
-        `events/${this.id}/divisions/${division}/rankings`,
-        options,
-        0
-      )
-    );
-  }
-
-  /**
-   *
-   * @param division Division ID
-   * @param options Ranking Search Options
-   *
    * (VEX IQ only)
    * Gets the finalist rankings for an event
    *
@@ -229,33 +258,29 @@ export class Event extends Watchable<EventData> implements EventData {
   }
 
   /**
-   * Gets teams at an event
-   * @param options Search Options
    *
-   * @example Basic Usage
+   * @param division Division ID
+   * @param options Ranking Search Options
+   *
+   * For rankings, you want to use "add" as your primary event if listening, as it will be issued on any update (basically every time matches are entered into Tournament Manager)
+   *
+   * @example
    * const event = await robotevents.events.get(sku);
-   * const teams = await event.teams();
+   * const rankings = await event.rankings(1, { rank: [1] });
+   * rankings.watch();
    *
-   * for (const team of teams) {
-   *  console.log(team);
-   * }
-   *
-   * @example Watch for Team Changes
-   * teams.watch();
-   *
-   * teams.on("add", team => {
-   *  console.log("Team added", team);
-   * })
-   *
-   * teams.on("remove", team => {
-   *  console.log("Team removed", team);
+   * ranking.on("add", rank => {
+   *  console.log("First Place Rank Update", rank);
    * });
    *
+   *
    */
-  teams(options: TeamOptionsFromEvent = {}) {
+  rankings(division: number, options: RankingOptionsFromEvent = {}) {
     return WatchableCollection.create(() =>
-      request<TeamData>(`events/${this.id}/teams`, options, 0).then((teams) =>
-        teams.map((data) => new Team(data))
+      request<Ranking>(
+        `events/${this.id}/divisions/${division}/rankings`,
+        options,
+        0
       )
     );
   }
