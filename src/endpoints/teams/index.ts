@@ -7,6 +7,7 @@ import { MatchOptionsFromTeam, Match } from "../matches";
 import { RankingOptionsFromTeam, Ranking } from "../rankings";
 import { SkillOptionsFromTeam, Skill } from "../skills";
 import { AwardOptionsFromTeam, Award } from "../award";
+import { search } from "./search";
 
 export type Grade =
   | "College"
@@ -48,7 +49,7 @@ export interface TeamOptionsFromEvent {
   country?: string[];
 }
 
-export default class Team extends Watchable<TeamData> implements TeamData {
+export class Team extends Watchable<TeamData> implements TeamData {
   // Team Data
   id = 0;
 
@@ -183,4 +184,19 @@ export default class Team extends Watchable<TeamData> implements TeamData {
   }
 }
 
-export { search as get } from "./search";
+export async function get(numberOrID: string | number) {
+  let teams: TeamData[] = [];
+
+  if (typeof numberOrID == "string") {
+    teams = await search({ number: [numberOrID] });
+  } else if (typeof numberOrID) {
+    teams = await search({ id: [numberOrID] });
+  }
+
+  if (teams.length < 1) {
+    return Promise.reject(new Error(`No team with Number/ID ${numberOrID}`));
+  }
+
+  return new Team(teams[0]);
+}
+export { search } from "./search";

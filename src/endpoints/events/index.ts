@@ -4,7 +4,7 @@ import WatchableCollection from "../../WatchableCollection";
 import { Award, AwardOptionsFromEvent } from "../award";
 import { MatchOptionsFromEvent, Match } from "../matches";
 import { RankingOptionsFromEvent, Ranking } from "../rankings";
-import Team, { TeamOptionsFromEvent, TeamData } from "../teams";
+import { Team, TeamOptionsFromEvent, TeamData } from "../teams";
 import Watchable from "../../Watchable";
 import { Skill, SkillOptionsFromEvent } from "../skills";
 import { Season } from "../seasons";
@@ -292,12 +292,12 @@ export class Event extends Watchable<EventData> implements EventData {
 }
 
 export async function get(skuOrID: string | number) {
-  const events: EventData[] = [];
+  let events: EventData[] = [];
 
   if (typeof skuOrID == "string") {
-    events.push(...(await search({ sku: [skuOrID] })));
+    events = await search({ sku: [skuOrID] });
   } else if (typeof skuOrID) {
-    events.push(...(await search({ id: [skuOrID] })));
+    events = await search({ id: [skuOrID] });
   }
 
   if (events.length < 1) {

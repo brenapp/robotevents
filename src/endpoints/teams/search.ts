@@ -2,7 +2,7 @@
  * Searching for/filtering teams
  */
 
-import Team, { Grade, TeamData } from ".";
+import { Team, Grade, TeamData } from ".";
 import request from "../../util/request";
 
 interface SearchOptions {
