@@ -4,6 +4,8 @@
 
 import { ProgramAbbr } from "../programs";
 import request from "../../util/request";
+import { EventData, Event } from "../events";
+import { Level } from "../events/search";
 
 export interface Season {
   id: number;
@@ -33,6 +35,24 @@ export async function fetch(id: number) {
 
 export async function all() {
   return request<Season>("seasons", {});
+}
+
+export interface EventOptionsFromSeason {
+  sku?: string[];
+  team?: number[];
+  start?: string;
+  end?: string;
+  level?: Level[];
+}
+
+export async function getEvents(
+  season: number,
+  options: EventOptionsFromSeason = {}
+) {
+  return request<EventData>(
+    `seasons/${season}/events`,
+    options
+  ).then((response) => response.map((data) => new Event(data)));
 }
 
 export type Year =
