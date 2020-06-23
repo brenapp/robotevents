@@ -77,7 +77,7 @@ export default class Team extends Watchable<TeamData> implements TeamData {
 
   constructor(data: TeamData) {
     super(() =>
-      request<TeamData>(`/teams`, { id: [data.id] }).then(
+      request<TeamData>(`teams`, { id: [data.id] }).then(
         (response) => response[0]
       )
     );
@@ -108,7 +108,7 @@ export default class Team extends Watchable<TeamData> implements TeamData {
   events(options: EventOptionsFromTeam = {}) {
     return WatchableCollection.create(() =>
       request<EventData>(
-        `/teams/${this.id}/events`,
+        `teams/${this.id}/events`,
         options,
         0
       ).then((response) => response.map((data) => new Event(data)))
@@ -140,7 +140,7 @@ export default class Team extends Watchable<TeamData> implements TeamData {
    */
   matches(options: MatchOptionsFromTeam = {}) {
     return WatchableCollection.create(() =>
-      request<Match>(`/teams/${this.id}/matches`, options, 0)
+      request<Match>(`teams/${this.id}/matches`, options, 0)
     );
   }
 
@@ -153,7 +153,7 @@ export default class Team extends Watchable<TeamData> implements TeamData {
    */
   rankings(options: RankingOptionsFromTeam = {}) {
     return WatchableCollection.create(() =>
-      request<Ranking>(`/teams/${this.id}/rankings`, options, 0)
+      request<Ranking>(`teams/${this.id}/rankings`, options, 0)
     );
   }
 
@@ -166,7 +166,7 @@ export default class Team extends Watchable<TeamData> implements TeamData {
    */
   skills(options: SkillOptionsFromTeam = {}) {
     return WatchableCollection.create(() =>
-      request<Skill>(`/teams/${this.id}/skills`, options, 0)
+      request<Skill>(`teams/${this.id}/skills`, options, 0)
     );
   }
 
@@ -178,7 +178,7 @@ export default class Team extends Watchable<TeamData> implements TeamData {
    */
   awards(options: AwardOptionsFromTeam = {}) {
     return WatchableCollection.create(() =>
-      request<Award>(`/teams/${this.id}/awards`, options, 0)
+      request<Award>(`teams/${this.id}/awards`, options, 0)
     );
   }
 }
