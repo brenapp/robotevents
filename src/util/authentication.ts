@@ -6,6 +6,7 @@
 import { parse } from "set-cookie-parser";
 
 export let COOKIE = "";
+let EXPIRES = Date.now();
 
 import fetch from "node-fetch";
 
@@ -15,7 +16,7 @@ import fetch from "node-fetch";
  * This function will perform a request to https://www.robotevents.com to get a re_session cookie with which to perform requests
  * Note: This function is automatically called when it is required
  */
-export async function authenticate() {
+export async function basic() {
   const response = await fetch("https://www.robotevents.com");
 
   if (!response.ok) {
@@ -28,13 +29,32 @@ export async function authenticate() {
 
   // Invalidate the cookie after re_session expires
   const re_session = cookie.find((c) => c.name === "re_session");
-  setTimeout(() => {
-    COOKIE = "";
-  }, (re_session?.maxAge || 0) * 1000);
+  const expires = 1000 * (re_session?.maxAge ?? 0) + Date.now();
 
-  return setCookie(cookie.map((c) => `${c.name}=${c.value}`).join("; "));
+  return setCookie(
+    cookie.map((c) => `${c.name}=${c.value}`).join("; "),
+    expires
+  );
 }
 
-export function setCookie(cookie: string) {
+/**
+ * Sets the RobotEvents Cookie (required for access)
+ * @param cookie
+ * @param expires
+ */
+export function setCookie(cookie: string, expires: number) {
+  EXPIRES = expires;
   return (COOKIE = cookie);
+}
+
+/**
+ * Checks if the user agent has been authenticated correctly
+ */
+export function ok() {
+  let ok = !COOKIE && EXPIRES > Date.now();
+  if (!ok) {
+    COOKIE = "";
+  }
+
+  return ok;
 }

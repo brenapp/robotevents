@@ -11,17 +11,13 @@
 import fetch from "node-fetch";
 import * as keya from "keya";
 import { ready, updateCurrent } from "./ratelimit";
-import { authenticate, COOKIE } from "./authentication";
-
-export interface RobotEventsRequest {
-  [key: string]: string | string[] | number | number[];
-}
+import { basic, COOKIE, ok } from "./authentication";
 
 /**
  * Serializes parameters into a string to be passed to the API
  * @param params RobotEventsRequest
  */
-function serialize(params: RobotEventsRequest): string {
+function serialize(params: object): string {
   let body = "";
 
   for (const [key, value] of Object.entries(params)) {
@@ -49,7 +45,7 @@ function serialize(params: RobotEventsRequest): string {
 
 export interface CacheEntry<T = unknown> {
   created: number;
-  value: T[];
+  value: T;
 }
 
 export interface PageMeta {
@@ -66,12 +62,10 @@ export interface PageMeta {
   total: number;
 }
 
-async function doRequest<T = unknown>(
-  url: URL
-): Promise<{ meta: PageMeta; data: T[] }> {
+async function doRequest<T = unknown>(url: URL): Promise<T> {
   // Authenticate if we haven't already
-  if (!COOKIE) {
-    await authenticate();
+  if (!ok()) {
+    await basic();
   }
 
   // Wait for the ratelimit to be clear (resolves immediately if ok)
@@ -87,7 +81,7 @@ async function doRequest<T = unknown>(
 
   // If the response redirected, we need to authenticate and try again
   if (response.status === 302) {
-    await authenticate();
+    await basic();
     return doRequest(url);
   }
 
@@ -111,7 +105,7 @@ export default async function request<T = unknown>(
   params: object,
   maxAge = Infinity
 ): Promise<T[]> {
-  const store = await keya.store<CacheEntry<T>>("robotevents");
+  const store = await keya.store<CacheEntry<T[]>>("robotevents");
 
   // Join the URL together
   const url = new URL(endpoint, "https://www.robotevents.com/api/v2/");
@@ -130,13 +124,13 @@ export default async function request<T = unknown>(
   }
 
   // Now get the inital request
-  let page = await doRequest<T>(url);
+  let page = await doRequest<{ meta: PageMeta; data: T[] }>(url);
   let data = page.data;
 
   // Paginate if needed
   while (page.meta.current_page < page.meta.last_page) {
     url.searchParams.set("page", (page.meta.current_page + 1).toString());
-    page = await doRequest<T>(url);
+    page = await doRequest<{ meta: PageMeta; data: T[] }>(url);
 
     data.push(...page.data);
   }
@@ -151,4 +145,31 @@ export default async function request<T = unknown>(
   });
 
   return data;
+}
+
+export async function requestSingle<T>(
+  endpoint: string,
+  params: object,
+  maxAge = Infinity
+) {
+  const store = await keya.store<CacheEntry<T>>("robotevents");
+
+  // Join the URL together
+  const url = new URL(endpoint, "https://www.robotevents.com/api/v2/");
+
+  // Add the (custom seralized) search params to support the custom array behavior of the API
+  url.search = serialize(params);
+
+  // See if the store has a non-stale instance of this href
+  const cached = await store.get(decodeURI(url.href));
+  if (cached) {
+    const age = Date.now() - cached.created;
+
+    if (age <= maxAge) {
+      return cached.value;
+    }
+  }
+
+  // Otherwise do the request
+  return doRequest<T>(url);
 }

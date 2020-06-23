@@ -1,6 +1,6 @@
 import { IdInfo } from "..";
 import Watchable from "../../Watchable";
-import request from "../../util/request";
+import request, { requestSingle } from "../../util/request";
 import WatchableCollection from "../../WatchableCollection";
 import { EventData, EventOptionsFromTeam, Event } from "../events";
 import { MatchOptionsFromTeam, Match } from "../matches";
@@ -77,11 +77,7 @@ export class Team extends Watchable<TeamData> implements TeamData {
   grade = "High School" as Grade;
 
   constructor(data: TeamData) {
-    super(() =>
-      request<TeamData>(`teams`, { id: [data.id] }).then(
-        (response) => response[0]
-      )
-    );
+    super(() => requestSingle<TeamData>(`teams/${data.id}`, { id: [data.id] }));
 
     for (const [key, value] of Object.entries(data)) {
       // @ts-ignore

@@ -1,5 +1,5 @@
 import search, { Level } from "./search";
-import request from "../../util/request";
+import request, { requestSingle } from "../../util/request";
 import WatchableCollection from "../../WatchableCollection";
 import { Award, AwardOptionsFromEvent } from "../award";
 import { MatchOptionsFromEvent, Match } from "../matches";
@@ -7,7 +7,6 @@ import { RankingOptionsFromEvent, Ranking } from "../rankings";
 import { Team, TeamOptionsFromEvent, TeamData } from "../teams";
 import Watchable from "../../Watchable";
 import { Skill, SkillOptionsFromEvent } from "../skills";
-import { Season } from "../seasons";
 
 export interface EventData {
   id: number;
@@ -107,7 +106,7 @@ export class Event extends Watchable<EventData> implements EventData {
   // Load the event
   constructor(data: EventData) {
     // Support watching
-    super(() => search({ id: [data.id] }).then((results) => results[0]));
+    super(() => requestSingle<EventData>(`events/${data.id}`, {}));
 
     for (const [key, value] of Object.entries(data)) {
       // @ts-ignore
