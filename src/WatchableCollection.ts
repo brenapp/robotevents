@@ -11,6 +11,7 @@ import { EventEmitter } from "events";
 interface WatchableCollectionEvents<T> {
   add: (item: T) => void;
   remove: (item: T) => void;
+  update: (current: T, old: T) => void;
 }
 
 export default interface WatchableCollection<T> {
@@ -28,10 +29,11 @@ export default interface WatchableCollection<T> {
   ): this;
 }
 
-export default class WatchableCollection<T> extends EventEmitter
-  implements Set<T> {
+export default class WatchableCollection<T extends { id: I }, I = number>
+  extends EventEmitter
+  implements Map<I, T> {
   // Holds all of contents of the collection
-  private contents: Set<T> = new Set<T>();
+  private contents: Map<I, T> = new Map<I, T>();
 
   // Polling config
   private check: () => Promise<T[]> | T[];
@@ -39,74 +41,68 @@ export default class WatchableCollection<T> extends EventEmitter
   private frequency: number = 30 * 1000;
   polling = false;
 
-  constructor(inital: Iterable<T>, check: () => Promise<T[]> | T[]) {
+  constructor(inital: [I, T][], check: () => Promise<T[]> | T[]) {
     super();
 
-    this.contents = new Set(inital);
+    this.contents = new Map(inital);
     this.check = check;
   }
 
-  // Set methods
+  // Map methods
 
-  /**
-   * Adds a value to the collection
-   * @param value
-   */
-  add(value: T) {
-    this.contents.add(value);
-
-    return this;
-  }
-
-  /**
-   * Removes a value from the collection
-   * @param value
-   */
-  delete(value: T) {
-    return this.contents.delete(value);
-  }
-
-  /**
-   * Clears the collection
-   */
   clear() {
     this.contents.clear();
   }
 
-  /**
-   * Gets the current size of the collection
-   */
+  delete(id: I) {
+    if (!this.contents.has(id)) {
+      throw new Error(
+        `WatchableCollection does not contain item with id ${id}`
+      );
+    }
+
+    this.emit("remove", id, this.contents.get(id) as T);
+    return this.contents.delete(id);
+  }
+
+  get(id: I) {
+    return this.contents.get(id);
+  }
+
+  has(id: I) {
+    return this.contents.has(id);
+  }
+
+  set(id: I, value: T) {
+    if (this.contents.has(id)) {
+      this.emit("update", value, this.contents.get(id) as T);
+    } else {
+      this.emit("add", value);
+    }
+
+    this.contents.set(id, value);
+    return this;
+  }
+
   get size() {
     return this.contents.size;
   }
 
-  has(item: T) {
-    return this.contents.has(item);
+  forEach(callback: (value: T, key: I, map: Map<I, T>) => void) {
+    this.contents.forEach(callback);
   }
 
-  /**
-   * Iterates through all items in the collection
-   * @param callback
-   * @param thisArg
-   */
-  forEach(callback: (value: T, value2: T, set: Set<T>) => void, thisArg?: any) {
-    return this.contents.forEach(callback, thisArg);
+  keys() {
+    return this.contents.keys();
+  }
+  values() {
+    return this.contents.values();
+  }
+  entries() {
+    return this.contents.entries();
   }
 
-  // Iteration
-  *keys() {
-    for (const item of this.contents) {
-      yield item;
-    }
-  }
-  values = this.keys;
-  *entries() {
-    for (const item of this.contents) {
-      yield [item, item] as [T, T];
-    }
-  }
-
-  [Symbol.iterator] = this.values;
+  [Symbol.iterator] = this.entries;
   [Symbol.toStringTag] = "WatchableCollection";
 
   // Watching
@@ -117,23 +113,27 @@ export default class WatchableCollection<T> extends EventEmitter
     }
 
     this.interval = setInterval(async () => {
-      const batch = await this.check();
-      const batchSet = new Set(batch);
+      const current = new Map(makeMappable<T, I>(await this.check()));
 
-      // Added items
-      for (const item of batch) {
-        if (this.has(item)) continue;
+      // Check for new and updated items
+      for (const [id, value] of current) {
+        if (!this.contents.has(id)) {
+          this.set(id, value);
+          continue;
+        }
 
-        this.add(item);
-        this.emit("add", item);
+        const old = this.contents.get(id) as T;
+
+        if (!eq(value, old)) {
+          this.set(id, value);
+        }
       }
 
-      // Removed Items
-      for (const item of this) {
-        if (batchSet.has(item)) continue;
+      // Check for removed values
+      for (const [id, value] of this.contents) {
+        if (current.has(id)) continue;
 
-        this.delete(item);
-        this.emit("remove", item);
+        this.contents.delete(id);
       }
     }, this.frequency);
   }
@@ -150,8 +150,32 @@ export default class WatchableCollection<T> extends EventEmitter
    * Creates a new watchable collection from a check function
    * @param check
    */
-  static async create<T>(check: () => Promise<T[]> | T[]) {
-    const inital = await check();
+  static async create<T extends { id: number }>(
+    check: () => Promise<T[]> | T[]
+  ) {
+    const inital = makeMappable(await check());
     return new WatchableCollection(inital, check);
   }
+}
+
+function makeMappable<T extends { id: I }, I = number>(values: T[]): [I, T][] {
+  return Object.entries(values).map(([i, value]) => [value.id, value]);
+}
+
+function eq(a: object, b: object): boolean {
+  for (const [key, value] of Object.entries(a)) {
+    if (!b.hasOwnProperty(key)) return false;
+    const compare = (b as any)[key];
+
+    switch (typeof compare) {
+      case "object": {
+        return eq(value, compare);
+      }
+
+      default: {
+        if (value !== compare) return false;
+      }
+    }
+  }
+  return true;
 }
