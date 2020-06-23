@@ -22,3 +22,9 @@ export interface RankingOptionsFromEvent {
   team?: number[];
   rank?: number[];
 }
+
+export interface RankingOptionsFromTeam {
+  event?: number[];
+  rank?: number[];
+  season?: number[];
+}

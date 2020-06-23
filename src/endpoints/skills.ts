@@ -13,7 +13,13 @@ export interface Skill {
   attempts: number;
 }
 
-export interface SkillsOptionsFromEvent {
+export interface SkillOptionsFromEvent {
   team?: number[];
   type?: SkillsType[];
+}
+
+export interface SkillOptionsFromTeam {
+  event?: number[];
+  type?: SkillsType[];
+  season?: number[];
 }

@@ -10,7 +10,8 @@ import { MatchOptionsFromEvent, Match } from "../matches";
 import { RankingOptionsFromEvent, Ranking } from "../rankings";
 import Team, { TeamOptionsFromEvent, TeamData } from "../teams";
 import Watchable from "../../Watchable";
-import { Skill, SkillsOptionsFromEvent } from "../skills";
+import { Skill, SkillOptionsFromEvent } from "../skills";
+import { Season } from "../seasons";
 
 export interface EventData {
   id: number;
@@ -54,6 +55,14 @@ export interface EventData {
   level: Level;
   ongoing: boolean;
   awards_finalized: boolean;
+}
+
+export interface EventOptionsFromTeam {
+  sku?: string[];
+  season?: number[];
+  start?: string;
+  end?: string;
+  level?: Level[];
 }
 
 export class Event extends Watchable<EventData> implements EventData {
@@ -162,7 +171,7 @@ export class Event extends Watchable<EventData> implements EventData {
    * skills.on("add", console.log)
    *
    */
-  skills(options: SkillsOptionsFromEvent = {}) {
+  skills(options: SkillOptionsFromEvent = {}) {
     return WatchableCollection.create(() =>
       request<Skill>(`events/${this.id}/skills`, options, 0)
     );

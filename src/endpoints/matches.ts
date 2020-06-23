@@ -44,3 +44,11 @@ export interface MatchOptionsFromEvent {
   instance?: number[];
   matchnum?: number[];
 }
+
+export interface MatchOptionsFromTeam {
+  event?: number[];
+  season?: number[];
+  round?: Round[];
+  instance?: number[];
+  matchnum?: number[];
+}

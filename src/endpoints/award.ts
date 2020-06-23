@@ -19,3 +19,8 @@ export interface AwardOptionsFromEvent {
   team?: number[];
   winner?: string[];
 }
+
+export interface AwardOptionsFromTeam {
+  event?: number[];
+  season?: number[];
+}
