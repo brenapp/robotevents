@@ -127,11 +127,7 @@ export class Team extends Watchable<TeamData> implements TeamData {
    * matches.watch();
    *
    * matches.on("add", match => {
-   *  if (match.scored) {
-   *    console.log("Match Scored", match)
-   *  } else {
-   *    console.log("Match Generated", match)
-   *  }
+   *  console.log("Match generated")
    * })
    *
    */

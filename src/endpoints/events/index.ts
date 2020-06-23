@@ -176,10 +176,6 @@ export class Event extends Watchable<EventData> implements EventData {
    * Gets the awards for the event, returns a watchable collection
    * @param options Award Search Options
    *
-   * Remember, Watchable Collection will issue "add" for any change in award information, which can be
-   *  - Award Created
-   *  - Award Assigned Winner(s)
-   *  - Award Qualification Changed
    *
    * @example
    * const event = await robotevents.events.get(sku);
@@ -199,9 +195,6 @@ export class Event extends Watchable<EventData> implements EventData {
   /**
    * Gets the matches for an event, returns a watchable collection.
    *
-   * Note: When watching, this collection will issue "add" for any change in the match information, this can mean:
-   *  - Match Generated
-   *  - Match Scored
    *
    * @example Scored Matches
    * const event = await robotevents.event(sku);
@@ -238,7 +231,6 @@ export class Event extends Watchable<EventData> implements EventData {
    * (VEX IQ only)
    * Gets the finalist rankings for an event
    *
-   * For rankings, you want to use "add" as your primary event if listening, as it will be issued on any update (basically every time matches are entered into Tournament Manager)
    *
    * @example
    * const event = await robotevents.events.get(sku);
@@ -266,7 +258,6 @@ export class Event extends Watchable<EventData> implements EventData {
    * @param division Division ID
    * @param options Ranking Search Options
    *
-   * For rankings, you want to use "add" as your primary event if listening, as it will be issued on any update (basically every time matches are entered into Tournament Manager)
    *
    * @example
    * const event = await robotevents.events.get(sku);

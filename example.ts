@@ -1,4 +1,5 @@
 import * as robotevents from "./src/main";
+import WatchableCollection from "./src/WatchableCollection";
 
 // Get all Change Up Seasons
 const ChangeUp = [

@@ -58,4 +58,46 @@ event.on("update", (key, current) => {
 
 ## API Reference
 
-https://robotevents.com/api/v2
+For options objects, refer to the [API documentation](https://robotevents.com/api/v2). These are strongly typed in TypeScript.
+
+### Watching
+
+All frequently updated structures support polling and updates using their `.watch()` method. This is either provided by `Watchable` for single objects (an event or team) or `WatchableCollection` for groups of objects (matches at an event, rankings, etc)
+
+**`Watchable`**
+Represents a single item that is commonly updated that is best represented as its own object. This includes `Event` and `Team`.
+
+`.watch(frequency?: number = 30000)`
+
+Starts polling RobotEvents for updates.
+
+- `frequency` is the number of ms to poll between. Note that polls ignore cache
+
+`.unwatch()`
+
+Stops polling
+
+`.on("update", (key, newValue, oldValue) => void)` Event triggered on update
+
+---
+
+**`WatchableCollection`**
+Reprsents a group of items, which can be added to, removed from, or have a individual item in the collection updated.
+
+> Note that `WatchableCollection` implements all [`Map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) properties.
+
+`.watch(frequency?: number = 30000)`
+
+Starts polling RobotEvents for updates.
+
+- `frequency` is the number of ms to poll between. Note that polls ignore cache
+
+`.unwatch()`
+
+Stops polling
+
+`.on("add", (value) => void)` Event triggered when item is added to collection
+
+`.on("remove", (value) => void)` Event triggered when item is removed from collection
+
+`.on("update", (newValue, oldValue) => void)` Event triggered when item is updated

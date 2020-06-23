@@ -61,7 +61,7 @@ export default class WatchableCollection<T extends { id: I }, I = number>
       );
     }
 
-    this.emit("remove", id, this.contents.get(id) as T);
+    this.emit("remove", this.contents.get(id) as T);
     return this.contents.delete(id);
   }
 
@@ -133,7 +133,7 @@ export default class WatchableCollection<T extends { id: I }, I = number>
       for (const [id, value] of this.contents) {
         if (current.has(id)) continue;
 
-        this.contents.delete(id);
+        this.delete(id);
       }
     }, this.frequency);
   }
