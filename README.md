@@ -1,6 +1,6 @@
 # RobotEvents
 
-Full support for the [RobotEvents v2 API](https://www.robotevents.com/api/v2/)
+Realtime API for [RobotEvents](https://www.robotevents.com) data.
 
 Features
 
