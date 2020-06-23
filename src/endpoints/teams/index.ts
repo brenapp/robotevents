@@ -182,3 +182,5 @@ export default class Team extends Watchable<TeamData> implements TeamData {
     );
   }
 }
+
+export { search as get } from "./search";
