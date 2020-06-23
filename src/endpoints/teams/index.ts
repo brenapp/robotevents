@@ -1,4 +1,6 @@
 import { IdInfo } from "..";
+import Watchable from "../../Watchable";
+import request from "../../util/request";
 
 export type Grade =
   | "College"
@@ -40,7 +42,7 @@ export interface TeamOptionsFromEvent {
   country?: string[];
 }
 
-export default class Team implements TeamData {
+export default class Team extends Watchable<TeamData> implements TeamData {
   // Team Data
   id = 0;
 
@@ -68,6 +70,12 @@ export default class Team implements TeamData {
   grade = "High School" as Grade;
 
   constructor(data: TeamData) {
+    super(() =>
+      request<TeamData>(`/teams`, { id: [data.id] }).then(
+        (response) => response[0]
+      )
+    );
+
     for (const [key, value] of Object.entries(data)) {
       // @ts-ignore
       this[key] = value;
