@@ -1,7 +1,3 @@
-/**
- * A single event
- */
-
 import search, { Level } from "./search";
 import request from "../../util/request";
 import WatchableCollection from "../../WatchableCollection";
