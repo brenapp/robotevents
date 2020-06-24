@@ -38,10 +38,13 @@ console.log(division.name);
 const matches = await event.matches(division.id);
 matches.watch();
 
-// When matches get scored, update them
+// When matches get generated
 matches.on("add", match => {
-    if (!match.scored) return;
+    console.log(match);
+});
 
+// When matches get scored
+matches.on("update", match => {
     console.log(match);
 });
 
