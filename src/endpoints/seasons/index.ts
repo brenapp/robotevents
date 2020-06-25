@@ -3,7 +3,7 @@
  */
 
 import { ProgramAbbr } from "../programs";
-import request from "../../util/request";
+import request, { requestSingle } from "../../util/request";
 import { EventData, Event } from "../events";
 import { Level } from "../events/search";
 
@@ -21,20 +21,12 @@ export interface Season {
   years_end: number;
 }
 
-export async function fetch(id: number) {
-  const seasons = await request<Season>("seasons", {
-    id,
-  });
-
-  if (seasons.length < 1) {
-    return Promise.reject(new Error(`No season with id ${id}`));
-  }
-
-  return seasons[0];
+export async function fetch(id: number, maxAge?: number) {
+  return requestSingle<Season>(`seasons/${id}`, {}, maxAge);
 }
 
-export async function all() {
-  return request<Season>("seasons", {});
+export async function all(maxAge?: number) {
+  return request<Season>("seasons", {}, maxAge);
 }
 
 export interface EventOptionsFromSeason {
@@ -47,11 +39,13 @@ export interface EventOptionsFromSeason {
 
 export async function getEvents(
   season: number,
-  options: EventOptionsFromSeason = {}
+  options: EventOptionsFromSeason = {},
+  maxAge?: number
 ) {
   return request<EventData>(
     `seasons/${season}/events`,
-    options
+    options,
+    maxAge
   ).then((response) => response.map((data) => new Event(data)));
 }
 

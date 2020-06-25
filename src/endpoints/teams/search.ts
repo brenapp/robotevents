@@ -15,8 +15,8 @@ interface SearchOptions {
   country?: string;
 }
 
-export function search(options: SearchOptions = {}) {
-  return request<TeamData>(`teams`, options).then((response) =>
+export function search(options: SearchOptions = {}, maxAge?: number) {
+  return request<TeamData>(`teams`, options, maxAge).then((response) =>
     response.map((data) => new Team(data))
   );
 }

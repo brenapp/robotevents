@@ -77,7 +77,9 @@ export class Team extends Watchable<TeamData> implements TeamData {
   grade = "High School" as Grade;
 
   constructor(data: TeamData) {
-    super(() => requestSingle<TeamData>(`teams/${data.id}`, { id: [data.id] }));
+    super(() =>
+      requestSingle<TeamData>(`teams/${data.id}`, { id: [data.id] }, 0)
+    );
 
     for (const [key, value] of Object.entries(data)) {
       // @ts-ignore

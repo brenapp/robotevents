@@ -5,7 +5,7 @@
  * Instead they will probably rely on the default export, which returns IDs from abbreviations
  *
  */
-import request from "../../util/request";
+import request, { requestSingle } from "../../util/request";
 
 export interface Program {
   id: number;
@@ -14,20 +14,12 @@ export interface Program {
 }
 
 // Actual API access
-export async function fetch(id: number) {
-  const programs = await request<Program>("programs", {
-    id,
-  });
-
-  if (programs.length < 1) {
-    return Promise.reject(new Error(`No program with id ${id}`));
-  }
-
-  return programs[0];
+export async function fetch(id: number, maxAge?: number) {
+  return requestSingle<Program>(`programs/${id}`, {}, maxAge);
 }
 
-export async function all() {
-  return request<Program>("programs", {});
+export async function all(maxAge?: number) {
+  return request<Program>("programs", {}, maxAge);
 }
 
 export type ProgramAbbr =

@@ -23,8 +23,8 @@ export interface SearchOptions {
   level?: Level[];
 }
 
-export default async function search(options: SearchOptions) {
-  return request<EventData>("events", options).then((results) =>
+export default async function search(options: SearchOptions, maxAge?: number) {
+  return request<EventData>("events", options, maxAge).then((results) =>
     results.map((data) => new Event(data))
   );
 }

@@ -281,13 +281,13 @@ export class Event extends Watchable<EventData> implements EventData {
   }
 }
 
-export async function get(skuOrID: string | number) {
+export async function get(skuOrID: string | number, maxAge?: number) {
   let events: EventData[] = [];
 
   if (typeof skuOrID == "string") {
-    events = await search({ sku: [skuOrID] });
+    events = await search({ sku: [skuOrID] }, maxAge);
   } else if (typeof skuOrID) {
-    events = await search({ id: [skuOrID] });
+    events = await search({ id: [skuOrID] }, maxAge);
   }
 
   if (events.length < 1) {
