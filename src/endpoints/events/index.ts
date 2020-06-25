@@ -197,17 +197,12 @@ export class Event extends Watchable<EventData> implements EventData {
    *
    *
    * @example Scored Matches
-   * const event = await robotevents.event(sku);
+   * const event = await robotevents.events.get(sku);
    * const matches = await event.matches(1); // Get current state of matches in Division 1
    * matches.watch();
    *
-   * matches.on("add", match => {
-   *  if (match.scored) {
-   *    console.log("Match Scored", match)
-   *  } else {
-   *    console.log("Match Generated", match)
-   *  }
-   * })
+   * matches.on("add", match => console.log("Match Generated", match));
+   * matches.on("update", match => console.log("Match Updated", match))
    *
    *
    * @param division Division ID
