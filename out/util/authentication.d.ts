@@ -3,6 +3,7 @@
  * In the future this may support EP accounts, but for now we're only supporting the read only API
  */
 export declare let COOKIE: string;
+export declare let BEARER: string;
 /**
  * Automatically authenticates
  *
@@ -10,6 +11,11 @@ export declare let COOKIE: string;
  * Note: This function is automatically called when it is required
  */
 export declare function basic(): Promise<string>;
+/**
+ * Sets the Bearer Token to provide to robotevents
+ * @param bearer
+ */
+export declare function setBearer(bearer: string): string;
 /**
  * Sets the RobotEvents Cookie (required for access)
  * @param cookie

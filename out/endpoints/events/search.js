@@ -44,10 +44,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var request_1 = __importDefault(require("../../util/request"));
 var _1 = require(".");
-function search(options) {
+function search(options, maxAge) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            return [2 /*return*/, request_1.default("events", options).then(function (results) {
+            return [2 /*return*/, request_1.default("events", options, maxAge).then(function (results) {
                     return results.map(function (data) { return new _1.Event(data); });
                 })];
         });

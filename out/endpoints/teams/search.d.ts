@@ -2,7 +2,7 @@
  * Searching for/filtering teams
  */
 import { Team, Grade } from ".";
-interface SearchOptions {
+export interface TeamSearchOptions {
     id?: number[];
     number?: string[];
     event?: number[];
@@ -11,5 +11,4 @@ interface SearchOptions {
     grade?: Grade[];
     country?: string;
 }
-export declare function search(options?: SearchOptions): Promise<Team[]>;
-export {};
+export declare function search(options?: TeamSearchOptions, maxAge?: number): Promise<Team[]>;

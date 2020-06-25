@@ -17,8 +17,8 @@ export interface Season {
     years_start: number;
     years_end: number;
 }
-export declare function fetch(id: number): Promise<Season>;
-export declare function all(): Promise<Season[]>;
+export declare function fetch(id: number, maxAge?: number): Promise<Season>;
+export declare function all(maxAge?: number): Promise<Season[]>;
 export interface EventOptionsFromSeason {
     sku?: string[];
     team?: number[];
@@ -26,7 +26,7 @@ export interface EventOptionsFromSeason {
     end?: string;
     level?: Level[];
 }
-export declare function getEvents(season: number, options?: EventOptionsFromSeason): Promise<Event[]>;
+export declare function getEvents(season: number, options?: EventOptionsFromSeason, maxAge?: number): Promise<Event[]>;
 export declare type Year = "2020-2021" | "2019-2020" | "2018-2019" | "2017-2018" | "2016-2017" | "2015-2016" | "2014-2015" | "2013-2014" | "2012-2013" | "2011-2012" | "2010-2011" | "2009-2010";
 export declare const years: Year[];
 /**

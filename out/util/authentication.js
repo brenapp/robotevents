@@ -43,9 +43,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ok = exports.setCookie = exports.basic = exports.COOKIE = void 0;
+exports.ok = exports.setCookie = exports.setBearer = exports.basic = exports.BEARER = exports.COOKIE = void 0;
 var set_cookie_parser_1 = require("set-cookie-parser");
 exports.COOKIE = "";
+exports.BEARER = "";
 var EXPIRES = Date.now();
 var node_fetch_1 = __importDefault(require("node-fetch"));
 /**
@@ -75,6 +76,14 @@ function basic() {
     });
 }
 exports.basic = basic;
+/**
+ * Sets the Bearer Token to provide to robotevents
+ * @param bearer
+ */
+function setBearer(bearer) {
+    return (exports.BEARER = bearer);
+}
+exports.setBearer = setBearer;
 /**
  * Sets the RobotEvents Cookie (required for access)
  * @param cookie

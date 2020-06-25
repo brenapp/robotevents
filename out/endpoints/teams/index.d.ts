@@ -6,6 +6,7 @@ import { MatchOptionsFromTeam, Match } from "../matches";
 import { RankingOptionsFromTeam, Ranking } from "../rankings";
 import { SkillOptionsFromTeam, Skill } from "../skills";
 import { AwardOptionsFromTeam, Award } from "../award";
+import { ProgramAbbr } from "../programs";
 export declare type Grade = "College" | "High School" | "Middle School" | "Elementary School";
 export interface TeamData {
     id: number;
@@ -27,7 +28,7 @@ export interface TeamData {
         };
     };
     registered: boolean;
-    program: IdInfo;
+    program: IdInfo<ProgramAbbr>;
     grade: Grade;
 }
 export interface TeamOptionsFromEvent {
@@ -59,7 +60,7 @@ export declare class Team extends Watchable<TeamData> implements TeamData {
     program: {
         id: number;
         name: string;
-        code: null;
+        code: ProgramAbbr;
     };
     grade: Grade;
     constructor(data: TeamData);
@@ -123,5 +124,18 @@ export declare class Team extends Watchable<TeamData> implements TeamData {
      */
     awards(options?: AwardOptionsFromTeam): Promise<WatchableCollection<Award, number>>;
 }
-export declare function get(numberOrID: string | number): Promise<Team>;
+/**
+ * Gets a registered team by their ID or Team Number
+ *
+ * Note: Multiple "teams" can have the same team number, as team numbers are only exclusive the program.
+ * For example, a Middle School team may participate in both VIQC and VRC, and therefore searching for
+ * their number will result in two results. Or a team participating in both VAIC-HS and VRC may have the
+ * same team number for both teams.
+ *
+ * In order to rectify this conclusion, you can specify an optional ProgramAbbr in the get method to specify
+ * which program you are referring to. If this is not specified, then the first result will be used
+ *
+ * @param numberOrID
+ */
+export declare function get(numberOrID: string | number, abbr?: ProgramAbbr): Promise<Team>;
 export { search } from "./search";

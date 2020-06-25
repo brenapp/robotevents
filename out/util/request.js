@@ -162,7 +162,7 @@ function serialize(params) {
 }
 function doRequest(url) {
     return __awaiter(this, void 0, void 0, function () {
-        var response, _a, _b;
+        var headers, response, _a, _b;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
@@ -177,10 +177,14 @@ function doRequest(url) {
                 case 3:
                     // Wait for the ratelimit to be clear (resolves immediately if ok)
                     _c.sent();
+                    headers = {
+                        cookie: authentication_1.COOKIE,
+                    };
+                    if (authentication_1.BEARER) {
+                        headers["Authorization"] = "Bearer " + authentication_1.BEARER;
+                    }
                     return [4 /*yield*/, node_fetch_1.default(url.href, {
-                            headers: {
-                                cookie: authentication_1.COOKIE,
-                            },
+                            headers: headers,
                             redirect: "manual",
                         })];
                 case 4:

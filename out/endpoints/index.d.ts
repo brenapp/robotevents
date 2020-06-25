@@ -1,5 +1,5 @@
-export interface IdInfo {
+export interface IdInfo<C = string> {
     id: number;
     name: string;
-    code: string | null;
+    code: C;
 }

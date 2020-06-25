@@ -2,6 +2,25 @@
 /**
  * Season Management in RobotEvents
  */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -38,45 +57,31 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.current = exports.get = exports.years = exports.getEvents = exports.all = exports.fetch = void 0;
-var request_1 = __importDefault(require("../../util/request"));
+var request_1 = __importStar(require("../../util/request"));
 var events_1 = require("../events");
-function fetch(id) {
+function fetch(id, maxAge) {
     return __awaiter(this, void 0, void 0, function () {
-        var seasons;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, request_1.default("seasons", {
-                        id: id,
-                    })];
-                case 1:
-                    seasons = _a.sent();
-                    if (seasons.length < 1) {
-                        return [2 /*return*/, Promise.reject(new Error("No season with id " + id))];
-                    }
-                    return [2 /*return*/, seasons[0]];
-            }
+            return [2 /*return*/, request_1.requestSingle("seasons/" + id, {}, maxAge)];
         });
     });
 }
 exports.fetch = fetch;
-function all() {
+function all(maxAge) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            return [2 /*return*/, request_1.default("seasons", {})];
+            return [2 /*return*/, request_1.default("seasons", {}, maxAge)];
         });
     });
 }
 exports.all = all;
-function getEvents(season, options) {
+function getEvents(season, options, maxAge) {
     if (options === void 0) { options = {}; }
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            return [2 /*return*/, request_1.default("seasons/" + season + "/events", options).then(function (response) { return response.map(function (data) { return new events_1.Event(data); }); })];
+            return [2 /*return*/, request_1.default("seasons/" + season + "/events", options, maxAge).then(function (response) { return response.map(function (data) { return new events_1.Event(data); }); })];
         });
     });
 }

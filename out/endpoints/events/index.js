@@ -245,17 +245,12 @@ var Event = /** @class */ (function (_super) {
      *
      *
      * @example Scored Matches
-     * const event = await robotevents.event(sku);
+     * const event = await robotevents.events.get(sku);
      * const matches = await event.matches(1); // Get current state of matches in Division 1
      * matches.watch();
      *
-     * matches.on("add", match => {
-     *  if (match.scored) {
-     *    console.log("Match Scored", match)
-     *  } else {
-     *    console.log("Match Generated", match)
-     *  }
-     * })
+     * matches.on("add", match => console.log("Match Generated", match));
+     * matches.on("update", match => console.log("Match Updated", match))
      *
      *
      * @param division Division ID
@@ -322,7 +317,7 @@ var Event = /** @class */ (function (_super) {
     return Event;
 }(Watchable_1.default));
 exports.Event = Event;
-function get(skuOrID) {
+function get(skuOrID, maxAge) {
     return __awaiter(this, void 0, void 0, function () {
         var events;
         return __generator(this, function (_a) {
@@ -330,13 +325,13 @@ function get(skuOrID) {
                 case 0:
                     events = [];
                     if (!(typeof skuOrID == "string")) return [3 /*break*/, 2];
-                    return [4 /*yield*/, search_1.default({ sku: [skuOrID] })];
+                    return [4 /*yield*/, search_1.default({ sku: [skuOrID] }, maxAge)];
                 case 1:
                     events = _a.sent();
                     return [3 /*break*/, 4];
                 case 2:
                     if (!typeof skuOrID) return [3 /*break*/, 4];
-                    return [4 /*yield*/, search_1.default({ id: [skuOrID] })];
+                    return [4 /*yield*/, search_1.default({ id: [skuOrID] }, maxAge)];
                 case 3:
                     events = _a.sent();
                     _a.label = 4;

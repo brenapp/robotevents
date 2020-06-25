@@ -3,7 +3,7 @@
  */
 import { Event } from ".";
 export declare type Level = "World" | "National" | "State" | "Signature" | "Regional" | "Other";
-export interface SearchOptions {
+export interface EventSearchOptions {
     id?: number[];
     sku?: string[];
     team?: number[];
@@ -12,4 +12,4 @@ export interface SearchOptions {
     end?: string;
     level?: Level[];
 }
-export default function search(options: SearchOptions): Promise<Event[]>;
+export default function search(options: EventSearchOptions, maxAge?: number): Promise<Event[]>;

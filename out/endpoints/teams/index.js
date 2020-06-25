@@ -104,11 +104,14 @@ var request_1 = __importStar(require("../../util/request"));
 var WatchableCollection_1 = __importDefault(require("../../WatchableCollection"));
 var events_1 = require("../events");
 var search_1 = require("./search");
+var main_1 = require("../../main");
 var Team = /** @class */ (function (_super) {
     __extends(Team, _super);
     function Team(data) {
         var e_1, _a;
-        var _this = _super.call(this, function () { return request_1.requestSingle("teams/" + data.id, { id: [data.id] }); }) || this;
+        var _this = _super.call(this, function () {
+            return request_1.requestSingle("teams/" + data.id, { id: [data.id] }, 0);
+        }) || this;
         // Team Data
         _this.id = 0;
         _this.number = "";
@@ -129,7 +132,7 @@ var Team = /** @class */ (function (_super) {
             },
         };
         _this.registered = false;
-        _this.program = { id: 0, name: "", code: null };
+        _this.program = { id: 0, name: "", code: "" };
         _this.grade = "High School";
         try {
             for (var _b = __values(Object.entries(data)), _c = _b.next(); !_c.done; _c = _b.next()) {
@@ -240,15 +243,32 @@ var Team = /** @class */ (function (_super) {
     return Team;
 }(Watchable_1.default));
 exports.Team = Team;
-function get(numberOrID) {
+/**
+ * Gets a registered team by their ID or Team Number
+ *
+ * Note: Multiple "teams" can have the same team number, as team numbers are only exclusive the program.
+ * For example, a Middle School team may participate in both VIQC and VRC, and therefore searching for
+ * their number will result in two results. Or a team participating in both VAIC-HS and VRC may have the
+ * same team number for both teams.
+ *
+ * In order to rectify this conclusion, you can specify an optional ProgramAbbr in the get method to specify
+ * which program you are referring to. If this is not specified, then the first result will be used
+ *
+ * @param numberOrID
+ */
+function get(numberOrID, abbr) {
     return __awaiter(this, void 0, void 0, function () {
-        var teams;
+        var teams, params;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     teams = [];
                     if (!(typeof numberOrID == "string")) return [3 /*break*/, 2];
-                    return [4 /*yield*/, search_1.search({ number: [numberOrID] })];
+                    params = { number: [numberOrID] };
+                    if (abbr && main_1.programs.get(abbr)) {
+                        params["program"] = [main_1.programs.get(abbr)];
+                    }
+                    return [4 /*yield*/, search_1.search(params)];
                 case 1:
                     teams = _a.sent();
                     return [3 /*break*/, 4];
@@ -260,9 +280,9 @@ function get(numberOrID) {
                     _a.label = 4;
                 case 4:
                     if (teams.length < 1) {
-                        return [2 /*return*/, Promise.reject(new Error("No team with Number/ID " + numberOrID))];
+                        return [2 /*return*/, Promise.reject(new Error("No team with Number/ID" + numberOrID + " " + (abbr ? " in program " + abbr : "")))];
                     }
-                    return [2 /*return*/, new Team(teams[0])];
+                    return [2 /*return*/, teams[0]];
             }
         });
     });
