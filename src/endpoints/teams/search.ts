@@ -5,7 +5,7 @@
 import { Team, Grade, TeamData } from ".";
 import request from "../../util/request";
 
-interface SearchOptions {
+export interface SearchOptions {
   id?: number[];
   number?: string[];
   event?: number[];
