@@ -8,6 +8,9 @@
   "author": "Brendan McGuire",
   "license": "MIT",
   "private": false,
+  "scripts": {
+    "prepublishOnly": "rm -rf out && tsc -d"
+  },
   "dependencies": {
     "@types/cookie": "^0.4.0",
     "@types/node-fetch": "^2.5.7",
