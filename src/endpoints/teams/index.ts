@@ -8,6 +8,9 @@ import { RankingOptionsFromTeam, Ranking } from "../rankings";
 import { SkillOptionsFromTeam, Skill } from "../skills";
 import { AwardOptionsFromTeam, Award } from "../award";
 import { search } from "./search";
+import { ProgramAbbr } from "../programs";
+import { programs } from "../../main";
+import { TeamSearchOptions } from "./search";
 
 export type Grade =
   | "College"
@@ -178,19 +181,44 @@ export class Team extends Watchable<TeamData> implements TeamData {
   }
 }
 
-export async function get(numberOrID: string | number) {
-  let teams: TeamData[] = [];
+/**
+ * Gets a registered team by their ID or Team Number
+ *
+ * Note: Multiple "teams" can have the same team number, as team numbers are only exclusive the program.
+ * For example, a Middle School team may participate in both VIQC and VRC, and therefore searching for
+ * their number will result in two results. Or a team participating in both VAIC-HS and VRC may have the
+ * same team number for both teams.
+ *
+ * In order to rectify this conclusion, you can specify an optional ProgramAbbr in the get method to specify
+ * which program you are referring to. If this is not specified, then the first result will be used
+ *
+ * @param numberOrID
+ */
+export async function get(numberOrID: string | number, abbr?: ProgramAbbr) {
+  let teams: Team[] = [];
 
   if (typeof numberOrID == "string") {
-    teams = await search({ number: [numberOrID] });
+    let params: TeamSearchOptions = { number: [numberOrID] };
+
+    if (abbr && programs.get(abbr)) {
+      params["program"] = [programs.get(abbr)];
+    }
+
+    teams = await search(params);
   } else if (typeof numberOrID) {
     teams = await search({ id: [numberOrID] });
   }
 
   if (teams.length < 1) {
-    return Promise.reject(new Error(`No team with Number/ID ${numberOrID}`));
+    return Promise.reject(
+      new Error(
+        `No team with Number/ID${numberOrID} ${
+          abbr ? ` in program ${abbr}` : ""
+        }`
+      )
+    );
   }
 
-  return new Team(teams[0]);
+  return teams[0];
 }
 export { search } from "./search";
