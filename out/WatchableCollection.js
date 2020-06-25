@@ -55,17 +55,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __values = (this && this.__values) || function(o) {
-    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
-    if (m) return m.call(o);
-    if (o && typeof o.length === "number") return {
-        next: function () {
-            if (o && i >= o.length) o = void 0;
-            return { value: o && o[i++], done: !o };
-        }
-    };
-    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
-};
 var __read = (this && this.__read) || function (o, n) {
     var m = typeof Symbol === "function" && o[Symbol.iterator];
     if (!m) return o;
@@ -81,6 +70,21 @@ var __read = (this && this.__read) || function (o, n) {
         finally { if (e) throw e.error; }
     }
     return ar;
+};
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
+};
+var __values = (this && this.__values) || function(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var events_1 = require("events");
@@ -145,6 +149,122 @@ var WatchableCollection = /** @class */ (function (_super) {
     WatchableCollection.prototype.entries = function () {
         return this.contents.entries();
     };
+    // Other utility methods
+    WatchableCollection.prototype.array = function () {
+        return __spread(this.contents.values());
+    };
+    WatchableCollection.prototype.idArray = function () {
+        return __spread(this.contents.keys());
+    };
+    /**
+     * Returns a new WatchableCollection of the items which pass the filter.
+     * Note this collection is watchable, and watch events will only be triggered for items that fit the filter function.
+     *
+     * @example
+     * const event = await robotevents.events.get(sku);
+     * const skills = (await event.skills()).filter(run => run.score > 30);
+     *
+     * skills.watch();
+     * skills.on("add", run => console.log("New run over 30pts", run));
+     *
+     * @param predicate
+     */
+    WatchableCollection.prototype.filter = function (predicate) {
+        var e_1, _a;
+        var _this = this;
+        var inital = [];
+        try {
+            for (var _b = __values(this.contents), _c = _b.next(); !_c.done; _c = _b.next()) {
+                var _d = __read(_c.value, 2), id = _d[0], item = _d[1];
+                if (predicate(item, id, this)) {
+                    inital.push([id, item]);
+                }
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        // Filtered check
+        var check = function (collection) {
+            return Promise.resolve(_this.check(_this)).then(function (runs) {
+                return runs.filter(function (run) { return predicate(run, run.id, collection); });
+            });
+        };
+        return new WatchableCollection(inital, check);
+    };
+    /**
+     * Looks for an item in the collection
+     * @param predicate
+     */
+    WatchableCollection.prototype.find = function (predicate) {
+        var e_2, _a;
+        try {
+            for (var _b = __values(this.contents), _c = _b.next(); !_c.done; _c = _b.next()) {
+                var _d = __read(_c.value, 2), id = _d[0], item = _d[1];
+                if (predicate(item, id, this)) {
+                    return item;
+                }
+            }
+        }
+        catch (e_2_1) { e_2 = { error: e_2_1 }; }
+        finally {
+            try {
+                if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+            }
+            finally { if (e_2) throw e_2.error; }
+        }
+        return undefined;
+    };
+    /**
+     * Checks if some of the elements in the collection pass the criterion
+     * @param predicate
+     */
+    WatchableCollection.prototype.some = function (predicate) {
+        var e_3, _a;
+        try {
+            for (var _b = __values(this.contents), _c = _b.next(); !_c.done; _c = _b.next()) {
+                var _d = __read(_c.value, 2), id = _d[0], item = _d[1];
+                if (predicate(item, id, this)) {
+                    return true;
+                }
+            }
+        }
+        catch (e_3_1) { e_3 = { error: e_3_1 }; }
+        finally {
+            try {
+                if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+            }
+            finally { if (e_3) throw e_3.error; }
+        }
+        return false;
+    };
+    /**
+     * Checks if every singe one of the elements in the collection pass the criterion
+     * @param predicate
+     */
+    WatchableCollection.prototype.every = function (predicate) {
+        var e_4, _a;
+        try {
+            for (var _b = __values(this.contents), _c = _b.next(); !_c.done; _c = _b.next()) {
+                var _d = __read(_c.value, 2), id = _d[0], item = _d[1];
+                if (!predicate(item, id, this)) {
+                    return false;
+                }
+            }
+        }
+        catch (e_4_1) { e_4 = { error: e_4_1 }; }
+        finally {
+            try {
+                if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+            }
+            finally { if (e_4) throw e_4.error; }
+        }
+        return true;
+    };
     // Watching
     WatchableCollection.prototype.watch = function (frequency) {
         var _this = this;
@@ -154,13 +274,13 @@ var WatchableCollection = /** @class */ (function (_super) {
         }
         this.interval = setInterval(function () { return __awaiter(_this, void 0, void 0, function () {
             var current, _a, _b, current_1, current_1_1, _c, id, value, old, _d, _e, _f, id, value;
-            var e_1, _g, e_2, _h;
+            var e_5, _g, e_6, _h;
             return __generator(this, function (_j) {
                 switch (_j.label) {
                     case 0:
                         _a = Map.bind;
                         _b = makeMappable;
-                        return [4 /*yield*/, this.check()];
+                        return [4 /*yield*/, this.check(this)];
                     case 1:
                         current = new (_a.apply(Map, [void 0, _b.apply(void 0, [_j.sent()])]))();
                         try {
@@ -177,12 +297,12 @@ var WatchableCollection = /** @class */ (function (_super) {
                                 }
                             }
                         }
-                        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+                        catch (e_5_1) { e_5 = { error: e_5_1 }; }
                         finally {
                             try {
                                 if (current_1_1 && !current_1_1.done && (_g = current_1.return)) _g.call(current_1);
                             }
-                            finally { if (e_1) throw e_1.error; }
+                            finally { if (e_5) throw e_5.error; }
                         }
                         try {
                             // Check for removed values
@@ -193,12 +313,12 @@ var WatchableCollection = /** @class */ (function (_super) {
                                 this.delete(id);
                             }
                         }
-                        catch (e_2_1) { e_2 = { error: e_2_1 }; }
+                        catch (e_6_1) { e_6 = { error: e_6_1 }; }
                         finally {
                             try {
                                 if (_e && !_e.done && (_h = _d.return)) _h.call(_d);
                             }
-                            finally { if (e_2) throw e_2.error; }
+                            finally { if (e_6) throw e_6.error; }
                         }
                         return [2 /*return*/];
                 }
@@ -240,7 +360,7 @@ function makeMappable(values) {
     });
 }
 function eq(a, b) {
-    var e_3, _a;
+    var e_7, _a;
     try {
         for (var _b = __values(Object.entries(a)), _c = _b.next(); !_c.done; _c = _b.next()) {
             var _d = __read(_c.value, 2), key = _d[0], value = _d[1];
@@ -258,12 +378,12 @@ function eq(a, b) {
             }
         }
     }
-    catch (e_3_1) { e_3 = { error: e_3_1 }; }
+    catch (e_7_1) { e_7 = { error: e_7_1 }; }
     finally {
         try {
             if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
         }
-        finally { if (e_3) throw e_3.error; }
+        finally { if (e_7) throw e_7.error; }
     }
     return true;
 }

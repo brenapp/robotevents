@@ -17,6 +17,9 @@ export default interface WatchableCollection<T> {
     once<U extends keyof WatchableCollectionEvents<T>>(event: U, listener: WatchableCollectionEvents<T>[U]): this;
     off<U extends keyof WatchableCollectionEvents<T>>(event: U, listener: WatchableCollectionEvents<T>[U]): this;
 }
+declare type CheckFunction<T extends {
+    id: I;
+}, I> = (self: WatchableCollection<T, I>) => Promise<T[]> | T[];
 export default class WatchableCollection<T extends {
     id: I;
 }, I = number> extends EventEmitter implements Map<I, T> {
@@ -25,7 +28,7 @@ export default class WatchableCollection<T extends {
     private interval;
     private frequency;
     polling: boolean;
-    constructor(inital: [I, T][], check: () => Promise<T[]> | T[]);
+    constructor(inital: [I, T][], check: CheckFunction<T, I>);
     clear(): void;
     delete(id: I): boolean;
     get(id: I): T | undefined;
@@ -38,6 +41,37 @@ export default class WatchableCollection<T extends {
     entries(): IterableIterator<[I, T]>;
     [Symbol.iterator]: () => IterableIterator<[I, T]>;
     [Symbol.toStringTag]: string;
+    array(): T[];
+    idArray(): I[];
+    /**
+     * Returns a new WatchableCollection of the items which pass the filter.
+     * Note this collection is watchable, and watch events will only be triggered for items that fit the filter function.
+     *
+     * @example
+     * const event = await robotevents.events.get(sku);
+     * const skills = (await event.skills()).filter(run => run.score > 30);
+     *
+     * skills.watch();
+     * skills.on("add", run => console.log("New run over 30pts", run));
+     *
+     * @param predicate
+     */
+    filter(predicate: (item: T, id: I, collection: WatchableCollection<T, I>) => boolean): WatchableCollection<T, I>;
+    /**
+     * Looks for an item in the collection
+     * @param predicate
+     */
+    find(predicate: (item: T, id: I, collection: WatchableCollection<T, I>) => boolean): T | undefined;
+    /**
+     * Checks if some of the elements in the collection pass the criterion
+     * @param predicate
+     */
+    some(predicate: (item: T, id: I, collection: WatchableCollection<T, I>) => boolean): boolean;
+    /**
+     * Checks if every singe one of the elements in the collection pass the criterion
+     * @param predicate
+     */
+    every(predicate: (item: T, id: I, collection: WatchableCollection<T, I>) => boolean): boolean;
     watch(frequency?: number): void;
     unwatch(): void;
     /**
