@@ -1,5 +1,6 @@
 import * as robotevents from "./src/main";
 import WatchableCollection from "./src/WatchableCollection";
+import { Round } from "./src/endpoints/matches";
 
 // Get all Change Up Seasons
 const ChangeUp = [
@@ -9,13 +10,20 @@ const ChangeUp = [
   robotevents.seasons.get("VAIC-HS", "2020-2021"),
 ] as number[];
 
-// Get all change up events
 (async function () {
   const team = await robotevents.teams.get("BCUZ");
-  const matches = await team.matches();
+  const matches = await team.matches({
+    round: [
+      Round.Finals,
+      Round.Semifinals,
+      Round.Quarterfinals,
+      Round.RoundOf16,
+    ],
+  });
 
   console.log(matches.size);
 
+  // Get all change up events
   const events = await robotevents.events.search({
     season: ChangeUp,
   });

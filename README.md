@@ -26,6 +26,8 @@ This example will log all scored matches from an event and print when the event'
 ```TypeScript
 
 import * as robotevents from "robotevents";
+import { Round } from "robotevents/endpoints/matches"
+
 
 const event = await robotevents.events.get(process.env.SKU);
 
@@ -34,8 +36,8 @@ const division = event.divisions[0];
 console.log(`${event.name} on ${event.start} @ ${event.location.venue}`);
 console.log(division.name);
 
-// Watch the division for matches
-const matches = await event.matches(division.id);
+// Watch the division for Finals Matches
+const matches = await event.matches(division.id, { type: [Round.Finals] });
 matches.watch();
 
 // When matches get generated
