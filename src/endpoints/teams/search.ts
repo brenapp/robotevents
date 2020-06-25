@@ -5,7 +5,7 @@
 import { Team, Grade, TeamData } from ".";
 import request from "../../util/request";
 
-export interface SearchOptions {
+export interface TeamSearchOptions {
   id?: number[];
   number?: string[];
   event?: number[];
@@ -15,7 +15,7 @@ export interface SearchOptions {
   country?: string;
 }
 
-export function search(options: SearchOptions = {}, maxAge?: number) {
+export function search(options: TeamSearchOptions = {}, maxAge?: number) {
   return request<TeamData>(`teams`, options, maxAge).then((response) =>
     response.map((data) => new Team(data))
   );
