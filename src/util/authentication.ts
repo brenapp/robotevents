@@ -6,6 +6,7 @@
 import { parse } from "set-cookie-parser";
 
 export let COOKIE = "";
+export let BEARER = "";
 let EXPIRES = Date.now();
 
 import fetch from "node-fetch";
@@ -35,6 +36,14 @@ export async function basic() {
     cookie.map((c) => `${c.name}=${c.value}`).join("; "),
     expires
   );
+}
+
+/**
+ * Sets the Bearer Token to provide to robotevents
+ * @param bearer
+ */
+export function setBearer(bearer: string) {
+  return (BEARER = bearer);
 }
 
 /**

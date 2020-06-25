@@ -11,7 +11,7 @@
 import fetch from "node-fetch";
 import * as keya from "keya";
 import { ready, updateCurrent } from "./ratelimit";
-import { basic, COOKIE, ok } from "./authentication";
+import { basic, COOKIE, ok, BEARER } from "./authentication";
 
 /**
  * Serializes parameters into a string to be passed to the API
@@ -71,11 +71,17 @@ async function doRequest<T = unknown>(url: URL): Promise<T> {
   // Wait for the ratelimit to be clear (resolves immediately if ok)
   await ready();
 
+  let headers = {
+    cookie: COOKIE,
+  } as { [key: string]: any };
+
+  if (BEARER) {
+    headers["Authorization"] = `Bearer ${BEARER}`;
+  }
+
   // Make the inital request
   const response = await fetch(url.href, {
-    headers: {
-      cookie: COOKIE,
-    },
+    headers,
     redirect: "manual",
   });
 
