@@ -29,6 +29,10 @@ export default interface WatchableCollection<T> {
   ): this;
 }
 
+type CheckFunction<T extends { id: I }, I> = (
+  self: WatchableCollection<T, I>
+) => Promise<T[]> | T[];
+
 export default class WatchableCollection<T extends { id: I }, I = number>
   extends EventEmitter
   implements Map<I, T> {
@@ -36,12 +40,12 @@ export default class WatchableCollection<T extends { id: I }, I = number>
   private contents: Map<I, T> = new Map<I, T>();
 
   // Polling config
-  private check: () => Promise<T[]> | T[];
+  private check: CheckFunction<T, I>;
   private interval: NodeJS.Timeout | null = null;
   private frequency: number = 30 * 1000;
   polling = false;
 
-  constructor(inital: [I, T][], check: () => Promise<T[]> | T[]) {
+  constructor(inital: [I, T][], check: CheckFunction<T, I>) {
     super();
 
     this.contents = new Map(inital);
@@ -105,6 +109,112 @@ export default class WatchableCollection<T extends { id: I }, I = number>
   [Symbol.iterator] = this.entries;
   [Symbol.toStringTag] = "WatchableCollection";
 
+  // Other utility methods
+  array(): T[] {
+    return [...this.contents.values()];
+  }
+
+  idArray(): I[] {
+    return [...this.contents.keys()];
+  }
+
+  /**
+   * Returns a new WatchableCollection of the items which pass the filter.
+   * Note this collection is watchable, and watch events will only be triggered for items that fit the filter function.
+   *
+   * @example
+   * const event = await robotevents.events.get(sku);
+   * const skills = (await event.skills()).filter(run => run.score > 30);
+   *
+   * skills.watch();
+   * skills.on("add", run => console.log("New run over 30pts", run));
+   *
+   * @param predicate
+   */
+  filter(
+    predicate: (
+      item: T,
+      id: I,
+      collection: WatchableCollection<T, I>
+    ) => boolean
+  ): WatchableCollection<T, I> {
+    const inital: [I, T][] = [];
+
+    for (const [id, item] of this.contents) {
+      if (predicate(item, id, this)) {
+        inital.push([id, item]);
+      }
+    }
+
+    // Filtered check
+    const check: CheckFunction<T, I> = (collection) =>
+      Promise.resolve(this.check(this)).then((runs) =>
+        runs.filter((run) => predicate(run, run.id, collection))
+      );
+
+    return new WatchableCollection(inital, check);
+  }
+
+  /**
+   * Looks for an item in the collection
+   * @param predicate
+   */
+  find(
+    predicate: (
+      item: T,
+      id: I,
+      collection: WatchableCollection<T, I>
+    ) => boolean
+  ): T | undefined {
+    for (const [id, item] of this.contents) {
+      if (predicate(item, id, this)) {
+        return item;
+      }
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Checks if some of the elements in the collection pass the criterion
+   * @param predicate
+   */
+  some(
+    predicate: (
+      item: T,
+      id: I,
+      collection: WatchableCollection<T, I>
+    ) => boolean
+  ) {
+    for (const [id, item] of this.contents) {
+      if (predicate(item, id, this)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Checks if every singe one of the elements in the collection pass the criterion
+   * @param predicate
+   */
+  every(
+    predicate: (
+      item: T,
+      id: I,
+      collection: WatchableCollection<T, I>
+    ) => boolean
+  ) {
+    for (const [id, item] of this.contents) {
+      if (!predicate(item, id, this)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   // Watching
   watch(frequency?: number) {
     this.polling = true;
@@ -113,7 +223,7 @@ export default class WatchableCollection<T extends { id: I }, I = number>
     }
 
     this.interval = setInterval(async () => {
-      const current = new Map(makeMappable<T, I>(await this.check()));
+      const current = new Map(makeMappable<T, I>(await this.check(this)));
 
       // Check for new and updated items
       for (const [id, value] of current) {
