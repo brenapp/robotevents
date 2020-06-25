@@ -3,6 +3,7 @@
   "version": "1.0.1",
   "description": "Programmatically access the RobotEvents API",
   "main": "out/main.js",
+  "types": "out/main.d.ts",
   "repository": "https://github.com/MayorMonty/robotevents",
   "author": "Brendan McGuire",
   "license": "MIT",
