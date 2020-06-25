@@ -41,7 +41,7 @@ export interface TeamData {
   };
 
   registered: boolean;
-  program: IdInfo;
+  program: IdInfo<ProgramAbbr>;
   grade: Grade;
 }
 
@@ -76,7 +76,7 @@ export class Team extends Watchable<TeamData> implements TeamData {
   };
 
   registered = false;
-  program = { id: 0, name: "", code: null };
+  program = { id: 0, name: "", code: "" as ProgramAbbr };
   grade = "High School" as Grade;
 
   constructor(data: TeamData) {
