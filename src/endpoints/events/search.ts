@@ -13,7 +13,7 @@ export type Level =
   | "Regional"
   | "Other";
 
-export interface SearchOptions {
+export interface EventSearchOptions {
   id?: number[];
   sku?: string[];
   team?: number[];
@@ -23,7 +23,10 @@ export interface SearchOptions {
   level?: Level[];
 }
 
-export default async function search(options: SearchOptions, maxAge?: number) {
+export default async function search(
+  options: EventSearchOptions,
+  maxAge?: number
+) {
   return request<EventData>("events", options, maxAge).then((results) =>
     results.map((data) => new Event(data))
   );
