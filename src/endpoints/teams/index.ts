@@ -212,7 +212,7 @@ export async function get(numberOrID: string | number, abbr?: ProgramAbbr) {
   if (teams.length < 1) {
     return Promise.reject(
       new Error(
-        `No team with Number/ID${numberOrID} ${
+        `No team with Number/ID ${numberOrID}${
           abbr ? ` in program ${abbr}` : ""
         }`
       )
