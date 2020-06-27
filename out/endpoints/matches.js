@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Round = void 0;
 var Round;
 (function (Round) {
     Round[Round["Practice"] = 1] = "Practice";

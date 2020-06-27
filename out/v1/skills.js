@@ -1,4 +1,7 @@
 "use strict";
+/**
+ * Support programmatic access to the Skills Leaderboard using the v1 API
+ */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -35,56 +38,23 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-/**
- * Program Management
- *
- * Most of the time, people will not need to actually go to network for this API (the options are present if you do need to however)
- * Instead they will probably rely on the default export, which returns IDs from abbreviations
- *
- */
-var request_1 = __importStar(require("../../util/request"));
-// Actual API access
-function fetch(id, maxAge) {
+var request_1 = require("../util/request");
+function getSkillsLeaderboard(season, options) {
     return __awaiter(this, void 0, void 0, function () {
+        var results;
         return __generator(this, function (_a) {
-            return [2 /*return*/, request_1.requestSingle("programs/" + id, {}, maxAge)];
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, request_1.requestSingle("/api/seasons/" + season + "/skills", { grade_level: options.grade_level, post_season: options.post_season })];
+                case 1:
+                    results = _a.sent();
+                    if (options.region) {
+                        results = results.filter(function (spot) { return spot.team.eventRegion === options.region; });
+                    }
+                    return [2 /*return*/, results];
+            }
         });
     });
 }
-exports.fetch = fetch;
-function all(maxAge) {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            return [2 /*return*/, request_1.default("programs", {}, maxAge)];
-        });
-    });
-}
-exports.all = all;
-var programs = {
-    VRC: 1,
-    VEXU: 4,
-    WORKSHOP: 37,
-    CREATE: 40,
-    VIQC: 41,
-    DIS: 42,
-    NRL: 43,
-    RAD: 44,
-    TVCR: 46,
-    TIQC: 47,
-    "VAIC-HS": 48,
-    "VAIC-U": 49,
-};
-function get(abbr) {
-    var _a;
-    return (_a = programs[abbr]) !== null && _a !== void 0 ? _a : 0;
-}
-exports.get = get;
-//# sourceMappingURL=index.js.map
+exports.default = getSkillsLeaderboard;
+//# sourceMappingURL=skills.js.map

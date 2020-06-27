@@ -3,7 +3,6 @@
  * Tracks ratelimit usage
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ok = exports.updateCurrent = exports.ready = exports.CURRENT = exports.MAX = void 0;
 exports.MAX = 1080;
 exports.CURRENT = 1080;
 /**

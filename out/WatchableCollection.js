@@ -134,7 +134,7 @@ var WatchableCollection = /** @class */ (function (_super) {
         get: function () {
             return this.contents.size;
         },
-        enumerable: false,
+        enumerable: true,
         configurable: true
     });
     WatchableCollection.prototype.forEach = function (callback) {
