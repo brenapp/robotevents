@@ -286,7 +286,7 @@ export async function get(skuOrID: string | number, maxAge?: number) {
   }
 
   if (events.length < 1) {
-    return Promise.reject(new Error(`No event with SKU/ID ${skuOrID}`));
+    return null;
   }
 
   return new Event(events[0]);

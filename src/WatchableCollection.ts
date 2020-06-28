@@ -60,9 +60,7 @@ export default class WatchableCollection<T extends { id: I }, I = number>
 
   delete(id: I) {
     if (!this.contents.has(id)) {
-      throw new Error(
-        `WatchableCollection does not contain item with id ${id}`
-      );
+      return false;
     }
 
     this.emit("remove", this.contents.get(id) as T);
