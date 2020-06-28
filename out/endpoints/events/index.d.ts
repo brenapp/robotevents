@@ -205,5 +205,5 @@ export declare class Event extends Watchable<EventData> implements EventData {
      */
     rankings(division: number, options?: RankingOptionsFromEvent): Promise<WatchableCollection<Ranking, number>>;
 }
-export declare function get(skuOrID: string | number, maxAge?: number): Promise<Event>;
+export declare function get(skuOrID: string | number, maxAge?: number): Promise<Event | null>;
 export { default as search } from "./search";

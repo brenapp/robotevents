@@ -137,5 +137,5 @@ export declare class Team extends Watchable<TeamData> implements TeamData {
  *
  * @param numberOrID
  */
-export declare function get(numberOrID: string | number, abbr?: ProgramAbbr): Promise<Team>;
+export declare function get(numberOrID: string | number, abbr?: ProgramAbbr): Promise<Team | null>;
 export { search } from "./search";

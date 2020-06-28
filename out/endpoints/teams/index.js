@@ -280,7 +280,7 @@ function get(numberOrID, abbr) {
                     _a.label = 4;
                 case 4:
                     if (teams.length < 1) {
-                        return [2 /*return*/, Promise.reject(new Error("No team with Number/ID " + numberOrID + (abbr ? " in program " + abbr : "")))];
+                        return [2 /*return*/, null];
                     }
                     return [2 /*return*/, teams[0]];
             }

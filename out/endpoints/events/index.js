@@ -337,7 +337,7 @@ function get(skuOrID, maxAge) {
                     _a.label = 4;
                 case 4:
                     if (events.length < 1) {
-                        return [2 /*return*/, Promise.reject(new Error("No event with SKU/ID " + skuOrID))];
+                        return [2 /*return*/, null];
                     }
                     return [2 /*return*/, new Event(events[0])];
             }

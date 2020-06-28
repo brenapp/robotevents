@@ -109,7 +109,7 @@ var WatchableCollection = /** @class */ (function (_super) {
     };
     WatchableCollection.prototype.delete = function (id) {
         if (!this.contents.has(id)) {
-            throw new Error("WatchableCollection does not contain item with id " + id);
+            return false;
         }
         this.emit("remove", this.contents.get(id));
         return this.contents.delete(id);
