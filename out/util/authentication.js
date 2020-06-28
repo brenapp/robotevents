@@ -43,6 +43,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ok = exports.setCookie = exports.setBearer = exports.basic = exports.BEARER = exports.COOKIE = void 0;
 var set_cookie_parser_1 = require("set-cookie-parser");
 exports.COOKIE = "";
 exports.BEARER = "";
