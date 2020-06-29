@@ -117,43 +117,6 @@ export default class WatchableCollection<T extends { id: I }, I = number>
   }
 
   /**
-   * Returns a new WatchableCollection of the items which pass the filter.
-   * Note this collection is watchable, and watch events will only be triggered for items that fit the filter function.
-   *
-   * @example
-   * const event = await robotevents.events.get(sku);
-   * const skills = (await event.skills()).filter(run => run.score > 30);
-   *
-   * skills.watch();
-   * skills.on("add", run => console.log("New run over 30pts", run));
-   *
-   * @param predicate
-   */
-  filter(
-    predicate: (
-      item: T,
-      id: I,
-      collection: WatchableCollection<T, I>
-    ) => boolean
-  ): WatchableCollection<T, I> {
-    const inital: [I, T][] = [];
-
-    for (const [id, item] of this.contents) {
-      if (predicate(item, id, this)) {
-        inital.push([id, item]);
-      }
-    }
-
-    // Filtered check
-    const check: CheckFunction<T, I> = (collection) =>
-      Promise.resolve(this.check(this)).then((runs) =>
-        runs.filter((run) => predicate(run, run.id, collection))
-      );
-
-    return new WatchableCollection(inital, check);
-  }
-
-  /**
    * Looks for an item in the collection
    * @param predicate
    */
