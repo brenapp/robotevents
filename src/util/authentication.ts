@@ -60,10 +60,5 @@ export function setCookie(cookie: string, expires: number) {
  * Checks if the user agent has been authenticated correctly
  */
 export function ok() {
-  let ok = !COOKIE && EXPIRES > Date.now();
-  if (!ok) {
-    COOKIE = "";
-  }
-
-  return ok;
+  return !!COOKIE && EXPIRES > Date.now();
 }
