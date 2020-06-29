@@ -30,14 +30,12 @@ interface Watchable<T> {
 
 abstract class Watchable<T> extends EventEmitter {
   check: Get<T>;
-  watchable: boolean;
   frequency: number = 30 * 1000;
   interval: NodeJS.Timeout | null = null;
   polling = false;
 
   constructor(check: Get<T>) {
     super();
-    this.watchable = !!check;
     this.check = check;
   }
 
