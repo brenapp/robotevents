@@ -11,6 +11,10 @@
   "scripts": {
     "prepublishOnly": "rm -rf out && tsc -d"
   },
+  "files": [
+    "out",
+    "yarn.lock"
+  ],
   "dependencies": {
     "@types/cookie": "^0.4.0",
     "@types/node-fetch": "^2.5.7",
