@@ -8,6 +8,23 @@ import { Team, TeamOptionsFromEvent, TeamData } from "../teams";
 import Watchable from "../../Watchable";
 import { Skill, SkillOptionsFromEvent } from "../skills";
 
+const re_strings: [number, string][] = [
+  [1, "vex-robotics-competition"],
+  [4, "college-competition"],
+  [47, "workshops"],
+  [40, "create-foundation"],
+  [41, "vex-iq-challenge"],
+  [42, "drones-in-school"],
+  [43, "national-robotics-league"],
+  [44, "rad"],
+  [46, "tsavrc"],
+  [47, "tsaviqc"],
+
+  // TODO: Insert VAIC-HS and VAIC-U when they get added
+];
+
+export const RE_PREFIXES = new Map<number, string>(re_strings);
+
 export interface EventData {
   id: number;
   sku: string;
@@ -112,6 +129,15 @@ export class Event extends Watchable<EventData> implements EventData {
       // @ts-ignore
       this[key] = value;
     }
+  }
+
+  /**
+   * Gets the associated URL from robotevents for this event
+   */
+  getURL() {
+    const prefix = RE_PREFIXES.get(this.program.id) as string;
+
+    return `https://www.robotevents.com/robot-competitions/${prefix}/${this.sku}.html`;
   }
 
   // Watchable Collections

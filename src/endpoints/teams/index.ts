@@ -90,6 +90,10 @@ export class Team extends Watchable<TeamData> implements TeamData {
     }
   }
 
+  getURL() {
+    return `https://www.robotevents.com/teams/${this.program.code}/${this.number}`;
+  }
+
   // Watchable Collections
 
   /**
