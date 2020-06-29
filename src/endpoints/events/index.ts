@@ -7,6 +7,8 @@ import { RankingOptionsFromEvent, Ranking } from "../rankings";
 import { Team, TeamOptionsFromEvent, TeamData } from "../teams";
 import Watchable from "../../Watchable";
 import { Skill, SkillOptionsFromEvent } from "../skills";
+import { IdInfo } from "..";
+import { ProgramAbbr } from "../programs";
 
 const re_strings: [number, string][] = [
   [1, "vex-robotics-competition"],
@@ -32,17 +34,8 @@ export interface EventData {
   start: string;
   end: string;
 
-  season: {
-    id: number;
-    name: string;
-    code: string | null;
-  };
-
-  program: {
-    id: number;
-    name: string;
-    code: string;
-  };
+  season: IdInfo<null>;
+  program: IdInfo<ProgramAbbr>;
 
   location: {
     venue: string;
@@ -93,7 +86,7 @@ export class Event extends Watchable<EventData> implements EventData {
   program = {
     id: 0,
     name: "",
-    code: "",
+    code: "" as ProgramAbbr,
   };
 
   location = {
