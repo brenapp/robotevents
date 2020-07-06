@@ -33,9 +33,10 @@ type CheckFunction<T extends { id: I }, I> = (
   self: WatchableCollection<T, I>
 ) => Promise<T[]> | T[];
 
-export default class WatchableCollection<T extends { id: I }, I = number>
-  extends EventEmitter
-  implements Map<I, T> {
+export default class WatchableCollection<
+  T extends { id: I },
+  I = number
+> extends EventEmitter {
   // Holds all of contents of the collection
   private contents: Map<I, T> = new Map<I, T>();
 
@@ -104,8 +105,7 @@ export default class WatchableCollection<T extends { id: I }, I = number>
     return this.contents.entries();
   }
 
-  [Symbol.iterator] = this.entries;
-  [Symbol.toStringTag] = "WatchableCollection";
+  [Symbol.iterator] = this.values;
 
   // Other utility methods
   array(): T[] {
