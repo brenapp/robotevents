@@ -13,15 +13,43 @@ export interface Program {
   name: string;
 }
 
-// Actual API access
+/**
+ * Fetches information about a program from RobotEvents. This is most useful to
+ * recieve the name or the RECF abbreviation of the program, but shouldn't be
+ * used in typical applications.
+ *
+ * @example
+ * const VRC = await robotevents.programs.fetch(1);
+ * console.log(VRC);
+ *
+ * @param id The program ID, see `robotevents.programs.fetch()`
+ * @param maxAge Maximum allowable age when using a cached value. If not
+ * specified, any suitable record from the cache may be used
+ */
 export async function fetch(id: number, maxAge?: number) {
   return requestSingle<Program>(`programs/${id}`, {}, maxAge);
 }
 
+/**
+ * Fetches all created programs. This method shouldn't be used in typical applications.
+ *
+ * @example
+ * const programs = await robotevents.programs.all();
+ *
+ * for (const program of programs) {
+ *  console.log(program.name)
+ * }
+ *
+ * @param maxAge Maximum allowable age when using a cached value. If not
+ * specified, any suitable record from the cache may be used
+ */
 export async function all(maxAge?: number) {
   return request<Program>("programs", {}, maxAge);
 }
 
+/**
+ * The RECF abbreviation for a program
+ */
 export type ProgramAbbr =
   | "VRC"
   | "VEXU"
@@ -51,6 +79,15 @@ const programs: { [T in ProgramAbbr]: number } = {
   "VAIC-U": 49,
 };
 
+/**
+ * Gets the ID of a program given its common abbreviation. Returns 0 if no
+ * program has that abbreviation. This is the standard way to refer to programs
+ *
+ * @example
+ * const VRC = robotevents.progams.get("VRC");
+ *
+ * @param abbr Program Abbreviation ("VRC" "VEXU" "VIQC" etc)
+ */
 export function get(abbr: ProgramAbbr) {
   return programs[abbr] ?? 0;
 }

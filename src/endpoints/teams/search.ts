@@ -15,6 +15,12 @@ export interface TeamSearchOptions {
   country?: string;
 }
 
+/**
+ * Searches for teams using the specified criteria
+ * @param options Team search options
+ * @param maxAge Maximum allowable age when using a cached value. If not
+ * specified, any suitable record from the cache may be used
+ */
 export function search(options: TeamSearchOptions = {}, maxAge?: number) {
   return request<TeamData>(`teams`, options, maxAge).then((response) =>
     response.map((data) => new Team(data))

@@ -90,6 +90,9 @@ export class Team extends Watchable<TeamData> implements TeamData {
     }
   }
 
+  /**
+   * Gets the RobotEvents listing for the team
+   */
   getURL() {
     return `https://www.robotevents.com/teams/${this.program.code}/${this.number}`;
   }
@@ -196,7 +199,20 @@ export class Team extends Watchable<TeamData> implements TeamData {
  * In order to rectify this conclusion, you can specify an optional ProgramAbbr in the get method to specify
  * which program you are referring to. If this is not specified, then the first result will be used
  *
- * @param numberOrID
+ * @example
+ * const team = await robotevents.teams.get("8686M", "VRC");
+ * console.log(team.id); // 57402
+ *
+ * @example
+ * const team = await robotevents.teams.get(57402);
+ * console.log(team.id); // 57402
+ *
+ * @param numberOrID The team number (string) or internal ID (number) of the team
+ * @param program The program to which the team belongs. If you specify an
+ * internal ID (number) you should not specify a program
+ * @param maxAge Maximum allowable age when using a cached value. If not
+ * specified, any suitable record from the cache may be used
+ *
  */
 export async function get(
   numberOrID: string | number,

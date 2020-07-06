@@ -45,18 +45,32 @@ export interface SkillsLeaderboardSpot {
 }
 
 export interface SkillsLeaderboardOptions {
+  // Filter by the grade level of teams.
   grade_level: Grade;
+
+  // Whether to include post season results. Defaults to false
   post_season?: 1 | 0;
+
+  // Filter by the team's region
   region?: string;
 }
 
+/**
+ *
+ * @param season Season ID
+ * @param options Search Options
+ * @param maxAge Maximum allowable age when using a cached value. If not
+ * specified, any suitable record from the cache may be used
+ */
 export default async function getSkillsLeaderboard(
   season: number,
-  options: SkillsLeaderboardOptions
+  options: SkillsLeaderboardOptions,
+  maxAge?: number
 ) {
   let results = await requestSingle<SkillsLeaderboardSpot[]>(
     `/api/seasons/${season}/skills`,
-    { grade_level: options.grade_level, post_season: options.post_season }
+    { grade_level: options.grade_level, post_season: options.post_season },
+    maxAge
   );
 
   if (options.region) {

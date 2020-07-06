@@ -31,12 +31,20 @@ export interface EventData {
   id: number;
   sku: string;
   name: string;
+
+  // The date time when the event starts, in ISO format
   start: string;
+
+  // The date time when the event ends, in ISO format
   end: string;
 
+  // The season that the event takes place in
   season: IdInfo<null>;
+
+  // The program for which the event
   program: IdInfo<ProgramAbbr>;
 
+  // Location information about the event
   location: {
     venue: string;
     address_1: string | null;
@@ -51,6 +59,7 @@ export interface EventData {
     };
   };
 
+  // The divisions of the event. Larger events will have multiple divisions, but most events have only a single divison. Many VEX IQ events will have many divisions.
   divisions: {
     id: number;
     name: string;
@@ -58,7 +67,11 @@ export interface EventData {
   }[];
 
   level: Level;
+
+  // Whether the event is currently ongoing
   ongoing: boolean;
+
+  // Whether the event has been finalized in RobotEvents
   awards_finalized: boolean;
 }
 
@@ -295,6 +308,20 @@ export class Event extends Watchable<EventData> implements EventData {
   }
 }
 
+/**
+ * Gets an event by it's SKU or ID. Returns an Event class, or null if no event can be found
+ *
+ * @example
+ * const event = await robotevents.events.get("RE-VRC-19-8312");
+ * console.log(event.name);
+ *
+ * @example
+ * const event = await robotevents.events.get(38312);
+ * console.log(event.name);
+ *
+ * @param skuOrID The SKU (string) or ID (number) of the event
+ * @param maxAge Maximum allowable age when using a cached value. If not specified, any suitable record from the cache may be used
+ */
 export async function get(skuOrID: string | number, maxAge?: number) {
   let events: EventData[] = [];
 

@@ -21,10 +21,36 @@ export interface Season {
   years_end: number;
 }
 
+/**
+ * Fetches information about a given Season.
+ *
+ * @example
+ * const TowerTakeoverVRC = robotevents.seasons.get("VRC", "2019-2020");
+ * const season = await robotevents.seasons.fetch(TowerTakeoverVRC);
+ *
+ * console.log(season.years_start);
+ *
+ *
+ * @param id The season ID. Refer to `robotevents.seasons.get` for more
+ * ergonomic ID access
+ * @param maxAge Maximum allowable age when using a cached value. If not
+ * specified, any suitable record from the cache may be used
+ */
 export async function fetch(id: number, maxAge?: number) {
   return requestSingle<Season>(`seasons/${id}`, {}, maxAge);
 }
 
+/**
+ * Fetches all seasons
+ *
+ * @example
+ * const seasons = await robotevents.seasons.fetch();
+ *
+ * console.log(seasons.length)
+ *
+ * @param maxAge Maximum allowable age when using a cached value. If not
+ * specified, any suitable record from the cache may be used
+ */
 export async function all(maxAge?: number) {
   return request<Season>("seasons", {}, maxAge);
 }
@@ -37,6 +63,21 @@ export interface EventOptionsFromSeason {
   level?: Level[];
 }
 
+/**
+ * Gets events from a given season. In most cases, it's reccomended to use
+ * `robotevents.events.search` instead
+ *
+ * @example
+ * const TowerTakeoverVRC = robotevents.seasons.get("VRC", "2019-2020");
+ * const events = await robotevents.seasons.getEvents(TowerTakeoverVRC, { level: ["State"] });
+ *
+ * console.log(events.length);
+ *
+ * @param season The Season ID
+ * @param options Event options
+ * @param maxAge Maximum allowable age when using a cached value. If not
+ * specified, any suitable record from the cache may be used
+ */
 export async function getEvents(
   season: number,
   options: EventOptionsFromSeason = {},
@@ -178,7 +219,7 @@ export function get(program: ProgramAbbr, year: Year) {
 }
 
 /**
- * Gets the current season for the given  program
+ * Gets the current season for the given program
  * @param program Program
  */
 export function current(program: ProgramAbbr) {
