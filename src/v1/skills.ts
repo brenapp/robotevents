@@ -9,6 +9,7 @@ import { requestSingle } from "../util/request";
 export interface SkillsLeaderboardSpot {
   rank: number;
 
+  // Information about the team who scored the run
   team: {
     id: number;
     program: ProgramAbbr;
@@ -25,12 +26,14 @@ export interface SkillsLeaderboardSpot {
     eventRegionId: number;
   };
 
+  // Information about the event the run took place at
   event: {
     sku: string;
     startDate: string;
     seasonName: string;
   };
 
+  // Scoring information about the run
   scores: {
     score: number;
     programming: number;
@@ -41,6 +44,7 @@ export interface SkillsLeaderboardSpot {
     driverScoredAt: string;
   };
 
+  // Whether the skills run is eligible for qualification
   eligible: boolean;
 }
 

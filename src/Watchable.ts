@@ -39,6 +39,20 @@ abstract class Watchable<T> extends EventEmitter {
     this.check = check;
   }
 
+  /**
+   * Starts watching this resource for updates. Will emit "update" when a key changes.
+   *
+   * @example
+   * const event = await robotevents.events.get(id);
+   *
+   * event.watch(10 * 1000); // Check every 10 seconds instead
+   *
+   * event.on("update", (key, current, old) => {
+   *  console.log(`${key}: ${old} -> ${current}`);
+   * });
+   *
+   * @param frequency Frequency to check record for update in ms, defaults to 30 000
+   */
   watch(frequency?: number) {
     if (frequency) {
       this.frequency = frequency;
@@ -63,6 +77,21 @@ abstract class Watchable<T> extends EventEmitter {
     }, this.frequency);
   }
 
+  /**
+   * Stops polling the resource for updates
+   *
+   * @example
+   * const event = await robotevents.events.get(id);
+   *
+   * event.watch(10 * 1000); // Check every 10 seconds instead
+   *
+   * event.on("update", (key, current, old) => {
+   *  console.log(`${key}: ${old} -> ${current}`);
+   * });
+   *
+   * event.unwatch(); // Stop watching for updates
+   *
+   */
   unwatch() {
     this.polling = false;
 

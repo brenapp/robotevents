@@ -18,9 +18,16 @@ export enum Round {
   RoundOf16 = 6,
 }
 
+/**
+ * Information about a specific match played
+ */
 export interface Match {
   id: number;
+
+  // The event the match was played at
   event: IdInfo;
+
+  // The division where the match was played
   division: IdInfo;
 
   // The round the event took place in (Practice, Quals, R16 QF, SF, F)

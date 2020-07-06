@@ -2,7 +2,10 @@
  * Tracks ratelimit usage
  */
 
+// The maximum number of allowed requests per minute
 export let MAX = 1080;
+
+// The current numer of remaining requests this time
 export let CURRENT = 1080;
 
 /**
