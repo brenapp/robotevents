@@ -243,7 +243,7 @@ export class Event extends Watchable<EventData> implements EventData {
   matches(division: number, options: MatchOptionsFromEvent = {}) {
     return WatchableCollection.create(() =>
       request<Match>(
-        `events/${this.id}/divisions/${division}/matches`,
+        `events/${this.id}/divisions/${division ?? 1}/matches`,
         options,
         0
       )
@@ -273,7 +273,7 @@ export class Event extends Watchable<EventData> implements EventData {
   finalistRankings(division: number, options: RankingOptionsFromEvent = {}) {
     return WatchableCollection.create(() =>
       request<Ranking>(
-        `events/${this.id}/divisions/${division}/finalistRankings`,
+        `events/${this.id}/divisions/${division ?? 1}/finalistRankings`,
         options,
         0
       )
@@ -300,7 +300,7 @@ export class Event extends Watchable<EventData> implements EventData {
   rankings(division: number, options: RankingOptionsFromEvent = {}) {
     return WatchableCollection.create(() =>
       request<Ranking>(
-        `events/${this.id}/divisions/${division}/rankings`,
+        `events/${this.id}/divisions/${division ?? 1}/rankings`,
         options,
         0
       )
