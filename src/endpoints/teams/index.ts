@@ -198,7 +198,11 @@ export class Team extends Watchable<TeamData> implements TeamData {
  *
  * @param numberOrID
  */
-export async function get(numberOrID: string | number, abbr?: ProgramAbbr) {
+export async function get(
+  numberOrID: string | number,
+  abbr?: ProgramAbbr,
+  maxAge?: number
+) {
   let teams: Team[] = [];
 
   if (typeof numberOrID == "string") {
@@ -208,9 +212,9 @@ export async function get(numberOrID: string | number, abbr?: ProgramAbbr) {
       params["program"] = [programs.get(abbr)];
     }
 
-    teams = await search(params);
+    teams = await search(params, maxAge);
   } else if (typeof numberOrID) {
-    teams = await search({ id: [numberOrID] });
+    teams = await search({ id: [numberOrID] }, maxAge);
   }
 
   if (teams.length < 1) {
