@@ -25,7 +25,7 @@ const re_strings: [number, string][] = [
   // TODO: Insert VAIC-HS and VAIC-U when they get added
 ];
 
-export const RE_PREFIXES = new Map<number, string>(re_strings);
+const RE_PREFIXES = new Map<number, string>(re_strings);
 
 export interface EventData {
   id: number;
