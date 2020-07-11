@@ -9,7 +9,7 @@ import request, { requestSingle } from "../../util/request";
 
 export interface Program {
   id: number;
-  abbr: string;
+  abbr: ProgramAbbr;
   name: string;
 }
 
@@ -59,7 +59,7 @@ export type ProgramAbbr =
   | "DIS"
   | "NRL"
   | "RAD"
-  | "TVCR"
+  | "TVRC"
   | "TIQC"
   | "VAIC-HS"
   | "VAIC-U";
@@ -73,7 +73,7 @@ const programs: { [T in ProgramAbbr]: number } = {
   DIS: 42,
   NRL: 43,
   RAD: 44,
-  TVCR: 46,
+  TVRC: 46,
   TIQC: 47,
   "VAIC-HS": 48,
   "VAIC-U": 49,
