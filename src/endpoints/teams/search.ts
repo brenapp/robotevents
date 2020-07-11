@@ -21,8 +21,7 @@ export interface TeamSearchOptions {
  * @param maxAge Maximum allowable age when using a cached value. If not
  * specified, any suitable record from the cache may be used
  */
-export function search(options: TeamSearchOptions = {}, maxAge?: number) {
-  return request<TeamData>(`teams`, options, maxAge).then((response) =>
-    response.map((data) => new Team(data))
-  );
+export async function search(options: TeamSearchOptions = {}, maxAge?: number) {
+  const response = await request<TeamData>(`teams`, options, maxAge);
+  return response.map((data) => new Team(data));
 }

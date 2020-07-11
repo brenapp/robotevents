@@ -42,7 +42,6 @@ export default async function search(
   options: EventSearchOptions,
   maxAge?: number
 ) {
-  return request<EventData>("events", options, maxAge).then((results) =>
-    results.map((data) => new Event(data))
-  );
+  const results = await request<EventData>("events", options, maxAge);
+  return results.map((data) => new Event(data));
 }
