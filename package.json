@@ -21,6 +21,14 @@
     "@types/set-cookie-parser": "^0.0.6",
     "keya": "^2.0.0",
     "node-fetch": "^2.6.0",
-    "set-cookie-parser": "^2.4.6"
+    "set-cookie-parser": "^2.4.6",
+    "typedoc": "^0.17.8"
+  },
+  "directories": {
+    "bin": "./out",
+    "lib": "./src"
+  },
+  "devDependencies": {
+    "typescript": "^3.9.7"
   }
 }
