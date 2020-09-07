@@ -21,8 +21,8 @@ const re_strings: [number, string][] = [
   [44, "rad"],
   [46, "tsavrc"],
   [47, "tsaviqc"],
-
-  // TODO: Insert VAIC-HS and VAIC-U when they get added
+  [48, "vaic-hs"],
+  [49, "vaic-u"],
 ];
 
 const RE_PREFIXES = new Map<number, string>(re_strings);
