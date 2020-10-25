@@ -7,14 +7,16 @@ Features
 - Watch all constructs for changes
 - Full Support for public RobotEvents v2 API
 - Full Types
-- Automatic Authentication
+- Automatic Authentication, with support for custom tokens
 - Cache Management
 - Automatic Ratelimiting
+
+## Install
 
 ```
 yarn add robotevents
 ```
-
+or
 ```
 npm install robotevents
 ```
