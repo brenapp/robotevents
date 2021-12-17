@@ -15,7 +15,7 @@ export interface Program {
 
 /**
  * Fetches information about a program from RobotEvents. This is most useful to
- * recieve the name or the RECF abbreviation of the program, but shouldn't be
+ * receive the name or the RECF abbreviation of the program, but shouldn't be
  * used in typical applications.
  *
  * @example
@@ -58,11 +58,16 @@ export type ProgramAbbr =
   | "VIQC"
   | "DIS"
   | "NRL"
-  | "RAD"
+  | "RADC"
+  | "VRAD"
   | "TVRC"
   | "TIQC"
   | "VAIC-HS"
-  | "VAIC-U";
+  | "VAIC-U"
+  | "FAC"
+  | "V123C"
+  | "VGOC"
+  | "BellVRC"
 
 const programs: { [T in ProgramAbbr]: number } = {
   VRC: 1,
@@ -72,11 +77,16 @@ const programs: { [T in ProgramAbbr]: number } = {
   VIQC: 41,
   DIS: 42,
   NRL: 43,
-  RAD: 44,
+  RADC: 44,
   TVRC: 46,
   TIQC: 47,
   "VAIC-HS": 48,
   "VAIC-U": 49,
+  FAC: 56,
+  VRAD: 51,
+  V123C: 53,
+  VGOC: 52,
+  BellVRC: 55
 };
 
 /**
