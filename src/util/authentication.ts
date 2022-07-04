@@ -73,5 +73,5 @@ export function setCookie(cookie: string, expires: number) {
  * have been revoked early, however it is generally a good indicator
  */
 export function ok() {
-  return !!COOKIE && EXPIRES > Date.now();
+  return (!!COOKIE && EXPIRES > Date.now()) || (BEARER);
 }
