@@ -13,7 +13,7 @@ import * as keya from "keya";
 import { ready, updateCurrent } from "./ratelimit";
 import { basic, COOKIE, ok, BEARER } from "./authentication";
 
-export let FETCH: (url: RequestInfo | URL, init?: RequestInit) => Promise<Response> = fetch;
+export let FETCH = fetch;
 
 /**
  * By default, the module will use cross-fetch to make requests. If you can specific needs, this can
