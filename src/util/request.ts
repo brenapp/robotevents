@@ -4,14 +4,26 @@
  *
  * Every minute, you are allowed to make 1080 requests,
  * this module will automatically queue requests to ensure
- * that ratelimiting is obeyed
+ * that rate limiting is obeyed
  *
  */
 
-import fetch from "node-fetch";
+import fetch from "cross-fetch";
 import * as keya from "keya";
 import { ready, updateCurrent } from "./ratelimit";
 import { basic, COOKIE, ok, BEARER } from "./authentication";
+
+export let FETCH: (url: RequestInfo | URL, init?: RequestInit) => Promise<Response> = fetch;
+
+/**
+ * By default, the module will use cross-fetch to make requests. If you can specific needs, this can
+ * be swapped out for a different implementation.
+ * 
+ * @param fetch The new fetch implementation to use
+ */
+export function setFetch(implementation: (url: RequestInfo | URL, init?: RequestInit) => Promise<Response>) {
+  FETCH = implementation;
+};
 
 /**
  * Serializes parameters into a string to be passed to the API
@@ -28,7 +40,7 @@ function serialize(params: object): string {
         body += `${encodeURIComponent(key)}=${encodeURIComponent(value)}&`;
         break;
 
-      // Arrays need to have all of their components added seperately
+      // Arrays need to have all of their components added separately
       case "object": {
         for (const v of value) {
           body += `${encodeURIComponent(key)}[]=${encodeURIComponent(v)}&`;
@@ -39,7 +51,7 @@ function serialize(params: object): string {
     }
   }
 
-  // Remove the last amperstand and return
+  // Remove the last ampersand and return
   return body.slice(0, body.length - 1);
 }
 
@@ -79,8 +91,8 @@ async function doRequest<T = unknown>(url: URL): Promise<T> {
     headers["Authorization"] = `Bearer ${BEARER}`;
   }
 
-  // Make the inital request
-  const response = await fetch(url.href, {
+  // Make the initial request
+  const response = await FETCH(url.href, {
     headers,
     redirect: "manual",
   });
@@ -98,7 +110,7 @@ async function doRequest<T = unknown>(url: URL): Promise<T> {
     );
   }
 
-  // If the response errored tell us
+  // If the response errored reject accordingly
   if (!response.ok) {
     return Promise.reject(await response.text());
   }
@@ -116,7 +128,7 @@ export default async function request<T = unknown>(
   // Join the URL together
   const url = new URL(endpoint, "https://www.robotevents.com/api/v2/");
 
-  // Add the (custom seralized) search params to support the custom array behavior of the API
+  // Add the (custom serialized) search params to support the custom array behavior of the API
   url.search = serialize({ per_page: 250, ...params });
 
   // See if the store has a non-stale instance of this href
@@ -129,7 +141,7 @@ export default async function request<T = unknown>(
     }
   }
 
-  // Now get the inital request
+  // Now get the initial request
   let page = await doRequest<{ meta: PageMeta; data: T[] }>(url);
   let data = page.data;
 
@@ -163,7 +175,7 @@ export async function requestSingle<T>(
   // Join the URL together
   const url = new URL(endpoint, "https://www.robotevents.com/api/v2/");
 
-  // Add the (custom seralized) search params to support the custom array behavior of the API
+  // Add the (custom serialized) search params to support the custom array behavior of the API
   url.search = serialize(params);
 
   // See if the store has a non-stale instance of this href

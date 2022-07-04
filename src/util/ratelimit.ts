@@ -5,7 +5,7 @@
 // The maximum number of allowed requests per minute
 export let MAX = 1080;
 
-// The current numer of remaining requests this time
+// The current number of remaining requests this time
 export let CURRENT = 1080;
 
 /**
