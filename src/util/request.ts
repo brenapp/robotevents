@@ -5,25 +5,12 @@
  * Every minute, you are allowed to make 1080 requests,
  * this module will automatically queue requests to ensure
  * that rate limiting is obeyed
- *
- */
+ **/
 
 import fetch from "cross-fetch";
 import * as keya from "keya";
 import { ready, updateCurrent } from "./ratelimit";
 import { basic, COOKIE, ok, BEARER } from "./authentication";
-
-export let FETCH = fetch;
-
-/**
- * By default, the module will use cross-fetch to make requests. If you can specific needs, this can
- * be swapped out for a different implementation.
- * 
- * @param fetch The new fetch implementation to use
- */
-export function setFetch(implementation: (url: RequestInfo | URL, init?: RequestInit) => Promise<Response>) {
-  FETCH = implementation;
-};
 
 /**
  * Serializes parameters into a string to be passed to the API
@@ -74,10 +61,23 @@ export interface PageMeta {
   total: number;
 }
 
+export let FETCH = fetch;
+
+/**
+ * By default, the module will use cross-fetch to make requests. If you can specific needs, this can
+ * be swapped out for a different implementation.
+ * 
+ * @param fetch The new fetch implementation to use
+ */
+export function setFetch(implementation: (url: RequestInfo | URL, init?: RequestInit) => Promise<Response>) {
+  FETCH = implementation;
+};
+
+
 async function doRequest<T = unknown>(url: URL): Promise<T> {
   // Authenticate if we haven't already
   if (!ok()) {
-    await basic();
+    await basic(FETCH);
   }
 
   // Wait for the ratelimit to be clear (resolves immediately if ok)
@@ -99,7 +99,7 @@ async function doRequest<T = unknown>(url: URL): Promise<T> {
 
   // If the response redirected, we need to authenticate and try again
   if (response.status === 302) {
-    await basic();
+    await basic(FETCH);
     return doRequest(url);
   }
 

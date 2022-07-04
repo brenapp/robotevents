@@ -8,8 +8,7 @@ import { parse } from "set-cookie-parser";
 export let COOKIE = "";
 export let BEARER = "";
 let EXPIRES = Date.now();
-
-import fetch from "node-fetch";
+import fetch from "cross-fetch";
 
 /**
  * Automatically authenticates
@@ -25,8 +24,8 @@ import fetch from "node-fetch";
  * console.log(robotevents.authentication.ok()); // True
  *
  */
-export async function basic() {
-  const response = await fetch("https://www.robotevents.com");
+export async function basic(implementation: typeof fetch = fetch) {
+  const response = await implementation("https://www.robotevents.com");
 
   if (!response.ok) {
     return Promise.reject(
@@ -34,7 +33,7 @@ export async function basic() {
     );
   }
 
-  const cookie = parse(response.headers.raw()["set-cookie"]);
+  const cookie = parse(response.headers.get("set-cookie") as string);
 
   // Invalidate the cookie after re_session expires
   const re_session = cookie.find((c) => c.name === "re_session");
