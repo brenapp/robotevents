@@ -75,10 +75,6 @@ export function setFetch(implementation: (url: RequestInfo | URL, init?: Request
 
 
 async function doRequest<T = unknown>(url: URL): Promise<T> {
-  // Authenticate if we haven't already
-  if (!ok()) {
-    await basic(FETCH);
-  }
 
   // Wait for the ratelimit to be clear (resolves immediately if ok)
   await ready();
