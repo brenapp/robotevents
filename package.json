@@ -9,7 +9,8 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "prepublishOnly": "rm -rf out && tsc -d"
+    "prepublishOnly": "rm -rf out && tsc -d",
+    "build": "tsc"
   },
   "files": [
     "out",
