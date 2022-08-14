@@ -10,7 +10,7 @@
 import fetch from "cross-fetch";
 import * as keya from "keya";
 import { ready, updateCurrent } from "./ratelimit";
-import { basic, COOKIE, ok, BEARER } from "./authentication";
+import { BEARER } from "./authentication";
 
 /**
  * Serializes parameters into a string to be passed to the API
@@ -61,17 +61,6 @@ export interface PageMeta {
   total: number;
 }
 
-export let FETCH = fetch;
-
-/**
- * By default, the module will use cross-fetch to make requests. If you can specific needs, this can
- * be swapped out for a different implementation.
- * 
- * @param fetch The new fetch implementation to use
- */
-export function setFetch(implementation: (url: RequestInfo | URL, init?: RequestInit) => Promise<Response>) {
-  FETCH = implementation;
-};
 
 
 async function doRequest<T = unknown>(url: URL): Promise<T> {
@@ -79,25 +68,16 @@ async function doRequest<T = unknown>(url: URL): Promise<T> {
   // Wait for the ratelimit to be clear (resolves immediately if ok)
   await ready();
 
-  let headers = {
-    cookie: COOKIE,
-  } as { [key: string]: any };
+  let headers = {} as Record<string, string>;
 
   if (BEARER) {
     headers["Authorization"] = `Bearer ${BEARER}`;
   }
 
   // Make the initial request
-  const response = await FETCH(url.href, {
+  const response = await fetch(url.href, {
     headers,
-    redirect: "manual",
   });
-
-  // If the response redirected, we need to authenticate and try again
-  if (response.status === 302) {
-    await basic(FETCH);
-    return doRequest(url);
-  }
 
   // Set the new ratelimit
   if (response.headers.has("x-ratelimit-remaining")) {
