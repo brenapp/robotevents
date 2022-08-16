@@ -47,47 +47,23 @@ export async function all(maxAge?: number) {
   return request<Program>("programs", {}, maxAge);
 }
 
-/**
- * The RECF abbreviation for a program
- */
-export type ProgramAbbr =
-  | "VRC"
-  | "VEXU"
-  | "WORKSHOP"
-  | "CREATE"
-  | "VIQC"
-  | "DIS"
-  | "NRL"
-  | "RADC"
-  | "VRAD"
-  | "TVRC"
-  | "TIQC"
-  | "VAIC-HS"
-  | "VAIC-U"
-  | "FAC"
-  | "V123C"
-  | "VGOC"
-  | "BellVRC"
 
-const programs: { [T in ProgramAbbr]: number } = {
-  VRC: 1,
-  VEXU: 4,
-  WORKSHOP: 37,
-  CREATE: 40,
-  VIQC: 41,
-  DIS: 42,
-  NRL: 43,
-  RADC: 44,
-  TVRC: 46,
-  TIQC: 47,
-  "VAIC-HS": 48,
-  "VAIC-U": 49,
+const programs = {
+  ADC: 44,
+  BellAVR: 55,
   FAC: 56,
+  NRL: 43,
+  TIQC: 47,
+  TVRC: 46,
+  VAIC: 57,
+  VEXU: 4,
+  VIQC: 41,
   VRAD: 51,
-  V123C: 53,
-  VGOC: 52,
-  BellVRC: 55
-};
+  VRC: 1,
+  WORKSHOP: 37
+} as const;
+
+export type ProgramAbbr = keyof typeof programs;
 
 /**
  * Gets the ID of a program given its common abbreviation. Returns 0 if no
