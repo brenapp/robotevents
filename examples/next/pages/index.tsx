@@ -17,7 +17,7 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     getEvents().then(setEvents);
-  });
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -27,7 +27,13 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}></main>
+      <main className={styles.main}>
+        <ul>
+          {events.map((event) => (
+            <li key={event.sku}>{event.name}</li>
+          ))}
+        </ul>
+      </main>
     </div>
   );
 };
