@@ -3,10 +3,10 @@
  */
 
 // The maximum number of allowed requests per minute
-export let MAX = 1080;
+export let MAX = 1000;
 
 // The current number of remaining requests this time
-export let CURRENT = 1080;
+export let CURRENT = 1000;
 
 /**
  * Resolves when you are ok to make requests
