@@ -146,6 +146,30 @@ export class Event extends Watchable<EventData> implements EventData {
     return `https://www.robotevents.com/robot-competitions/${prefix}/${this.sku}.html`;
   }
 
+  getData(): EventData {
+    return {
+      id: this.id,
+      sku: this.sku,
+      name: this.name,
+      start: this.start,
+      end: this.end,
+      season: this.season,
+      program: this.program,
+      location: this.location,
+      divisions: this.divisions,
+      level: this.level,
+      ongoing: this.ongoing,
+      awards_finalized: this.awards_finalized,
+    };
+  }
+
+  /**
+   * Converts the team to JSON
+   */
+  toJSON() {
+    return this.getData();
+  }
+
   // Watchable Collections
 
   /**

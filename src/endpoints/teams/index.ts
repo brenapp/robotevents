@@ -97,6 +97,30 @@ export class Team extends Watchable<TeamData> implements TeamData {
     return `https://www.robotevents.com/teams/${this.program.code}/${this.number}`;
   }
 
+  /**
+   * Returns the raw response from RobotEvents
+   */
+  getData(): TeamData {
+    return {
+      id: this.id,
+      number: this.number,
+      team_name: this.team_name,
+      robot_name: this.robot_name,
+      organization: this.organization,
+      location: this.location,
+      registered: this.registered,
+      program: this.program,
+      grade: this.grade,
+    };
+  }
+
+  /**
+   * Converts the team to JSON
+   */
+  toJSON() {
+    return this.getData();
+  };
+
   // Watchable Collections
 
   /**
