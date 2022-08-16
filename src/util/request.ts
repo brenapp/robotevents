@@ -8,7 +8,6 @@
  **/
 
 import fetch from "cross-fetch";
-import * as keya from "keya";
 import { ready, updateCurrent } from "./ratelimit";
 import { BEARER } from "./authentication";
 
@@ -61,8 +60,6 @@ export interface PageMeta {
   total: number;
 }
 
-
-
 async function doRequest<T = unknown>(url: URL): Promise<T> {
 
   // Wait for the ratelimit to be clear (resolves immediately if ok)
@@ -99,23 +96,11 @@ export default async function request<T = unknown>(
   params: object,
   maxAge = Infinity
 ): Promise<T[]> {
-  const store = await keya.store<CacheEntry<T[]>>("robotevents");
-
   // Join the URL together
   const url = new URL(endpoint, "https://www.robotevents.com/api/v2/");
 
   // Add the (custom serialized) search params to support the custom array behavior of the API
   url.search = serialize({ per_page: 250, ...params });
-
-  // See if the store has a non-stale instance of this href
-  const cached = await store.get(decodeURI(url.href));
-  if (cached) {
-    const age = Date.now() - cached.created;
-
-    if (age <= maxAge) {
-      return cached.value;
-    }
-  }
 
   // Now get the initial request
   let page = await doRequest<{ meta: PageMeta; data: T[] }>(url);
@@ -132,12 +117,6 @@ export default async function request<T = unknown>(
   // Delete pagination keys
   url.searchParams.delete("page");
 
-  // Set the cache value
-  await store.set(decodeURI(url.href), {
-    created: Date.now(),
-    value: data,
-  });
-
   return data;
 }
 
@@ -146,7 +125,6 @@ export async function requestSingle<T>(
   params: object,
   maxAge = Infinity
 ) {
-  const store = await keya.store<CacheEntry<T>>("robotevents");
 
   // Join the URL together
   const url = new URL(endpoint, "https://www.robotevents.com/api/v2/");
@@ -154,16 +132,5 @@ export async function requestSingle<T>(
   // Add the (custom serialized) search params to support the custom array behavior of the API
   url.search = serialize(params);
 
-  // See if the store has a non-stale instance of this href
-  const cached = await store.get(decodeURI(url.href));
-  if (cached) {
-    const age = Date.now() - cached.created;
-
-    if (age <= maxAge) {
-      return cached.value;
-    }
-  }
-
-  // Otherwise do the request
   return doRequest<T>(url);
 }
