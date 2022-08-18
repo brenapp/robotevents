@@ -17,7 +17,7 @@ export interface Award {
   title: string;
 
   // The events that the award qualifies to (this array is similar to event
-  // names? RC in this array means the award qualifies for the reigonal championship)
+  // names? RC in this array means the award qualifies for the regional championship)
   qualifications: string[];
 
   // All winners of this event, and their division if specified

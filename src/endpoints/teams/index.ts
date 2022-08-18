@@ -27,13 +27,13 @@ export interface TeamData {
   organization: string;
 
   location: {
-    venue: string | null;
-    address_1: string | null;
-    address_2: string | null;
-    city: string | null;
-    region: string | null;
-    postcode: string | null;
-    country: string | null;
+    venue: string;
+    address_1: string;
+    address_2: string;
+    city: string;
+    region: string;
+    postcode: string;
+    country: string;
     coordinates: {
       lat: string;
       lon: string;
@@ -62,13 +62,13 @@ export class Team extends Watchable<TeamData> implements TeamData {
   organization = "";
 
   location = {
-    venue: null,
-    address_1: null,
-    address_2: null,
-    city: null,
-    region: null,
-    postcode: null,
-    country: null,
+    venue: "",
+    address_1: "",
+    address_2: "",
+    city: "",
+    region: "",
+    postcode: "",
+    country: "",
     coordinates: {
       lat: "",
       lon: "",

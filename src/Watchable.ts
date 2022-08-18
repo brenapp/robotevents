@@ -1,13 +1,14 @@
 /**
  * Makes a class Watchable
  *
- * For example, allows you to moniter events for updates
+ * For example, allows you to monitor events for updates
  *
  */
 
 import { EventEmitter } from "events";
 
 export type Get<T> = () => Promise<T> | T;
+
 
 interface WatchableEvents<T, I extends keyof T = keyof T> {
   update: (key: I, current: T[I], old: T[I]) => void;
