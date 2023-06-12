@@ -11,8 +11,7 @@
   "dependencies": {
     "next": "12.2.5",
     "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "robotevents": "^2.5.0"
+    "react-dom": "18.2.0"
   },
   "devDependencies": {
     "@types/node": "18.7.2",
@@ -21,5 +20,8 @@
     "eslint": "8.21.0",
     "eslint-config-next": "12.2.5",
     "typescript": "4.7.4"
+  },
+  "localDependencies": {
+    "robotevents": "../.."
   }
 }

@@ -1,6 +1,5 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
 import * as robotevents from "robotevents";
@@ -12,11 +11,18 @@ function getEvents() {
   });
 }
 
+async function getSeason() {
+  const number = robotevents.seasons.current("VRC");
+  return robotevents.seasons.fetch(number!);
+}
+
 const Home: NextPage = () => {
   const [events, setEvents] = useState<robotevents.events.Event[]>([]);
+  const [season, setSeason] = useState<robotevents.seasons.Season | null>(null);
 
   useEffect(() => {
     getEvents().then(setEvents);
+    getSeason().then(setSeason);
   }, []);
 
   return (
@@ -28,6 +34,9 @@ const Home: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
+        <h1>Season</h1>
+        <p>{JSON.stringify(season, null, 4)}</p>
+        <h1>Signature Events</h1>
         <ul>
           {events.map((event) => (
             <li key={event.sku}>{event.name}</li>
