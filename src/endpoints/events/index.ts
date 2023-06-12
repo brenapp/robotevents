@@ -2,7 +2,7 @@ import search, { Level } from "./search";
 import request, { requestSingle } from "../../util/request";
 import WatchableCollection from "../../WatchableCollection";
 import { Award, AwardOptionsFromEvent } from "../award";
-import { MatchOptionsFromEvent, Match } from "../matches";
+import { MatchOptionsFromEvent, MatchData, Match } from "../matches";
 import { RankingOptionsFromEvent, Ranking } from "../rankings";
 import { Team, TeamOptionsFromEvent, TeamData } from "../teams";
 import Watchable from "../../Watchable";
@@ -15,7 +15,7 @@ const re_strings: [number, string][] = [
   [4, "college-competition"],
   [47, "workshops"],
   [40, "create-foundation"],
-  [41, "vex-iq-challenge"],
+  [41, "vex-iq-competition"],
   [42, "drones-in-school"],
   [43, "national-robotics-league"],
   [44, "rad"],
@@ -23,6 +23,7 @@ const re_strings: [number, string][] = [
   [47, "tsaviqc"],
   [48, "vaic-hs"],
   [49, "vaic-u"],
+  [57, "vex-ai-competition"]
 ];
 
 const RE_PREFIXES = new Map<number, string>(re_strings);
@@ -266,12 +267,12 @@ export class Event extends Watchable<EventData> implements EventData {
    */
   matches(division: number, options: MatchOptionsFromEvent = {}) {
     return WatchableCollection.create(() =>
-      request<Match>(
+      request<MatchData>(
         `events/${this.id}/divisions/${division ?? 1}/matches`,
         options,
         0
-      )
-    );
+      ).then((matches) => matches.map((data) => new Match(data)))
+    )
   }
 
   /**

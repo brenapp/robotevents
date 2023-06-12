@@ -1,7 +1,9 @@
 import { IdInfo } from "./index";
 
+
+export type Color = "red" | "blue";
 export interface Alliance {
-  color: "red" | "blue";
+  color: Color;
   score: number;
   teams: {
     team: IdInfo;
@@ -21,7 +23,7 @@ export enum Round {
 /**
  * Information about a specific match played
  */
-export interface Match {
+export interface MatchData {
   id: number;
 
   // The event the match was played at
@@ -60,6 +62,100 @@ export interface Match {
   // The alliances involved in the match
   alliances: Alliance[];
 }
+
+export class Match implements MatchData {
+
+  id = 0;
+  event = {
+    id: 0,
+    name: "",
+    code: ""
+  }
+  division = {
+    id: 0,
+    name: "",
+    code: ""
+  }
+  round = Round.Qualification;
+  instance = 0;
+  matchnum = 0;
+  scheduled = "";
+  started = "";
+  field = "";
+  scored = false;
+  name = "";
+  alliances: Alliance[] = [];
+
+
+  constructor(data: MatchData) {
+    Object.assign(this, data);
+  };
+
+  /**
+   * Gets the alliance with the given color
+   * 
+   * @param color Red or Blue
+   * @returns The alliance with the given color
+   */
+  alliance(color: Color): Alliance {
+    return this.alliances.find(a => a.color === color) as Alliance;
+  };
+
+  /**
+   * Gets the outcome of the match
+   * 
+   * @example
+   * const team = await robotevents.teams.get("3796B");
+   * const matches = await team.matches();
+   * 
+   * for (const match of match) {
+   *  const { winner, loser } = match.allianceOutcome();
+   *  console.log(winner.color, loser.color)
+   * };
+   *
+   * @returns The winning and losing alliance, or null if the match is unscored or tied
+   */
+  allianceOutcome(): { winner: Alliance | null, loser: Alliance | null } {
+    const red = this.alliance("red");
+    const blue = this.alliance("blue");
+
+    if (red.score > blue.score) {
+      return { winner: red, loser: blue };
+    } else if (blue.score > red.score) {
+      return { winner: blue, loser: red }
+    } else {
+      return { winner: null, loser: null };
+    }
+  };
+
+  /**
+   * Gets the outcome of the match for a specific team
+   * 
+   * @param team Team number
+   */
+  teamOutcome(team: string): "win" | "loss" | "tie" | "unscored" {
+    const { winner, loser } = this.allianceOutcome();
+
+    if (!this.scored) {
+      return "unscored";
+    }
+
+    if (!winner || !loser) {
+      return "tie";
+    }
+
+    if (winner.teams.find(t => t.team.code === team)) {
+      return "win";
+    } else if (loser.teams.find(t => t.team.code === team)) {
+      return "loss";
+    } else {
+      return "tie";
+    };
+  };
+
+
+
+};
 
 export interface MatchOptionsFromEvent {
   team?: number[];

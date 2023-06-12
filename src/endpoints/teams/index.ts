@@ -3,7 +3,7 @@ import Watchable from "../../Watchable";
 import request, { requestSingle } from "../../util/request";
 import WatchableCollection from "../../WatchableCollection";
 import { EventData, EventOptionsFromTeam, Event } from "../events";
-import { MatchOptionsFromTeam, Match } from "../matches";
+import { MatchOptionsFromTeam, MatchData, Match } from "../matches";
 import { RankingOptionsFromTeam, Ranking } from "../rankings";
 import { SkillOptionsFromTeam, Skill } from "../skills";
 import { AwardOptionsFromTeam, Award } from "../award";
@@ -169,7 +169,7 @@ export class Team extends Watchable<TeamData> implements TeamData {
    */
   matches(options: MatchOptionsFromTeam = {}) {
     return WatchableCollection.create(() =>
-      request<Match>(`teams/${this.id}/matches`, options, 0)
+      request<MatchData>(`teams/${this.id}/matches`, options, 0).then(matches => matches.map(match => new Match(match)))
     );
   }
 
