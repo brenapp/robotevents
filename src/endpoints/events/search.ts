@@ -13,6 +13,8 @@ export type Level =
   | "Regional"
   | "Other";
 
+export type EventType = "tournament" | "league" | "workshop" | "virtual";
+
 export interface EventSearchOptions {
   id?: number[];
   sku?: string[];
@@ -20,7 +22,10 @@ export interface EventSearchOptions {
   season?: number[];
   start?: string;
   end?: string;
+  region?: string;
   level?: Level[];
+  myEvents?: boolean;
+  eventTypes?: EventType[];
 }
 
 /**

@@ -12,7 +12,8 @@ export interface TeamSearchOptions {
   registered?: boolean;
   program?: number[];
   grade?: Grade[];
-  country?: string;
+  country?: string[];
+  myTeams?: boolean;
 }
 
 /**
