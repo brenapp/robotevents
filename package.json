@@ -27,6 +27,6 @@
     "lib": "./src"
   },
   "devDependencies": {
-    "typescript": "^3.9.7"
+    "typescript": "^5.3.3"
   }
 }
