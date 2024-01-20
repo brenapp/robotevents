@@ -91,6 +91,27 @@ export class Match implements MatchData {
     Object.assign(this, data);
   };
 
+  getData(): MatchData {
+    return {
+      id: this.id,
+      event: this.event,
+      division: this.division,
+      round: this.round,
+      instance: this.instance,
+      matchnum: this.matchnum,
+      scheduled: this.scheduled,
+      started: this.started,
+      field: this.field,
+      scored: this.scored,
+      name: this.name,
+      alliances: this.alliances
+    }
+  }
+
+  toJSON(): MatchData {
+    return this.getData()
+  }
+
   /**
    * Gets the alliance with the given color
    * 
@@ -152,9 +173,6 @@ export class Match implements MatchData {
       return "tie";
     };
   };
-
-
-
 };
 
 export interface MatchOptionsFromEvent {
