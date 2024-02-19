@@ -227,7 +227,11 @@ export class Match implements MatchData {
       case Round.RoundRobin: {
         return "RR " + id;
       }
+      default: {
+        return this.name;
+      }
     };
+
   };
 
 };
