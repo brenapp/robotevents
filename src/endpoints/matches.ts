@@ -18,6 +18,8 @@ export enum Round {
   Semifinals = 4,
   Finals = 5,
   RoundOf16 = 6,
+  TopN = 15,
+  RoundRobin = 16
 }
 
 /**
@@ -173,6 +175,61 @@ export class Match implements MatchData {
       return "tie";
     };
   };
+
+  /**
+   * Gets all of the teams in the match, excludes non-sitting teams (i.e. teams on the alliance who
+   * do not play, very rare in modern competitions) 
+   * @returns List of all teams in the match
+   */
+  teams(): IdInfo<string>[] {
+    return this.alliances.flatMap(a => a.teams.filter(t => !t.sitting).map(t => t.team))
+  }
+
+  /**
+   * Gets a short name for this match based on the round. Short name looks something like
+   * 
+   * ```
+   * P 13
+   * Q 23
+   * R16 1-1
+   * QF 1-1
+   * SF 2-1
+   * F 1-3
+   * F 3 // IQ finals matches
+   * RR 2-1 // Round Robin
+   * ```
+   * 
+   */
+  shortName(): string {
+    const id = this.instance + "-" + this.matchnum;
+    switch (this.round) {
+      case Round.Practice: {
+        return "P " + this.matchnum;
+      }
+      case Round.Qualification: {
+        return "Q " + this.matchnum;
+      }
+      case Round.Quarterfinals: {
+        return "QF " + id;
+      }
+      case Round.Semifinals: {
+        return "SF " + id;
+      }
+      case Round.Finals: {
+        return "F " + id;
+      }
+      case Round.RoundOf16: {
+        return "R16 " + id;
+      }
+      case Round.TopN: {
+        return "F " + this.matchnum;
+      }
+      case Round.RoundRobin: {
+        return "RR " + id;
+      }
+    };
+  };
+
 };
 
 export interface MatchOptionsFromEvent {
