@@ -16,9 +16,9 @@ robotevents.authentication.setBearer("eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhd
 
     const seasons = await robotevents.seasons.all();
     const seasonsByProgram: Record<ProgramAbbr, Partial<Record<Year, number>>> = {
-        VRC: {},
-        VEXU: {},
-        VAIC: {},
+        V5RC: {},
+        VURC: {},
+        VAIRC: {},
         WORKSHOP: {},
         VIQRC: {},
         NRL: {},
@@ -31,6 +31,7 @@ robotevents.authentication.setBearer("eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhd
     };
 
     for (const season of seasons) {
+        console.log(season.program.code);
         const year = `${season.years_start}-${season.years_end}` as Year;
         seasonsByProgram[season.program.code][year] = season.id;
     };
