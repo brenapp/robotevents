@@ -1,10 +1,10 @@
-import search, { Level } from "./search";
+import search, { EventType, Level } from "./search";
 import request, { requestSingle } from "../../util/request";
 import WatchableCollection from "../../WatchableCollection";
 import { Award, AwardOptionsFromEvent } from "../award";
 import { MatchOptionsFromEvent, MatchData, Match } from "../matches";
 import { RankingOptionsFromEvent, Ranking } from "../rankings";
-import { Team, TeamOptionsFromEvent, TeamData } from "../teams";
+import { Team, TeamOptionsFromEvent, TeamData, Location } from "../teams";
 import Watchable from "../../Watchable";
 import { Skill, SkillOptionsFromEvent } from "../skills";
 import { IdInfo } from "..";
@@ -28,6 +28,13 @@ const re_strings: [number, string][] = [
 
 const RE_PREFIXES = new Map<number, string>(re_strings);
 
+
+export type Division = {
+  id: number;
+  name: string;
+  order: number;
+} 
+
 export interface EventData {
   id: number;
   sku: string;
@@ -46,34 +53,20 @@ export interface EventData {
   program: IdInfo<ProgramAbbr>;
 
   // Location information about the event
-  location: {
-    venue: string;
-    address_1: string | null;
-    address_2: string | null;
-    city: string | null;
-    region: string | null;
-    postcode: string | null;
-    country: string | null;
-    coordinates: {
-      lat: string;
-      lon: string;
-    };
-  };
+  location: Location;
+  locations: Location[];
 
-  // The divisions of the event. Larger events will have multiple divisions, but most events have only a single divison. Many VEX IQ events will have many divisions.
-  divisions: {
-    id: number;
-    name: string;
-    order: number;
-  }[];
+  // The divisions of the event. Larger events will have multiple divisions, but most events have only a single division.
+  divisions: Division[];
 
   level: Level;
 
-  // Whether the event is currently ongoing
+  // Whether the event is currently ongoing (famously unreliable)
   ongoing: boolean;
 
   // Whether the event has been finalized in RobotEvents
   awards_finalized: boolean;
+  eventType: EventType | null;
 }
 
 export interface EventOptionsFromTeam {
@@ -105,27 +98,26 @@ export class Event extends Watchable<EventData> implements EventData {
 
   location = {
     venue: "",
-    address_1: null,
-    address_2: null,
-    city: null,
-    region: null,
-    postcode: null,
-    country: null,
+    address_1: "",
+    address_2: "",
+    city: "",
+    region: "",
+    postcode: "",
+    country: "",
     coordinates: {
-      lat: "",
-      lon: "",
+      lat: 0,
+      lon: 0,
     },
   };
 
-  divisions = [] as {
-    id: number;
-    name: string;
-    order: number;
-  }[];
+  locations = []
+
+  divisions = []
 
   level = "Other" as Level;
   ongoing = false;
   awards_finalized = false;
+  eventType = null;
 
   // Load the event
   constructor(data: EventData) {
@@ -157,10 +149,12 @@ export class Event extends Watchable<EventData> implements EventData {
       season: this.season,
       program: this.program,
       location: this.location,
+      locations: this.locations,
       divisions: this.divisions,
       level: this.level,
       ongoing: this.ongoing,
       awards_finalized: this.awards_finalized,
+      eventType: this.eventType
     };
   }
 

@@ -39,4 +39,7 @@ robotevents.authentication.setBearer("eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhd
     console.log("All Seasons:");
     console.log(JSON.stringify(seasonsByProgram, null, 4));
 
+    const team = await robotevents.teams.get("3796B", "V5RC");
+    console.log(team?.getData());
+
 })();

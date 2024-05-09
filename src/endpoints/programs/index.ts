@@ -49,8 +49,8 @@ export async function all(maxAge?: number) {
 
 
 const programs = {
-  VRC: 1,
-  VEXU: 4,
+  V5RC: 1,
+  VURC: 4,
   WORKSHOP: 37,
   VIQRC: 41,
   NRL: 43,
@@ -60,7 +60,7 @@ const programs = {
   VRAD: 51,
   BellAVR: 55,
   FAC: 56,
-  VAIC: 57,
+  VAIRC: 57,
 } as const;
 
 export type ProgramAbbr = keyof typeof programs;
