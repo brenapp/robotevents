@@ -23,17 +23,16 @@ const re_strings: [number, string][] = [
   [47, "tsaviqc"],
   [48, "vaic-hs"],
   [49, "vaic-u"],
-  [57, "vex-ai-competition"]
+  [57, "vex-ai-competition"],
 ];
 
 const RE_PREFIXES = new Map<number, string>(re_strings);
-
 
 export type Division = {
   id: number;
   name: string;
   order: number;
-} 
+};
 
 export interface EventData {
   id: number;
@@ -110,9 +109,9 @@ export class Event extends Watchable<EventData> implements EventData {
     },
   };
 
-  locations = []
+  locations = [] as Location[];
 
-  divisions = []
+  divisions = [] as Division[];
 
   level = "Other" as Level;
   ongoing = false;
@@ -154,7 +153,7 @@ export class Event extends Watchable<EventData> implements EventData {
       level: this.level,
       ongoing: this.ongoing,
       awards_finalized: this.awards_finalized,
-      eventType: this.eventType
+      eventType: this.eventType,
     };
   }
 
@@ -266,7 +265,7 @@ export class Event extends Watchable<EventData> implements EventData {
         options,
         0
       ).then((matches) => matches.map((data) => new Match(data)))
-    )
+    );
   }
 
   /**
