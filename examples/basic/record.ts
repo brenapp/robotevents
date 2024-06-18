@@ -22,8 +22,8 @@ robotevents.authentication.setBearer("eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhd
             message: "Select the program",
             type: "list",
             choices: [
-                { name: "VRC", value: "VRC" },
-                { name: "VEXU", value: "VEXU" },
+                { name: "V5RC", value: "V5RC" },
+                { name: "VURC", value: "VURC" },
                 { name: "VAIC", value: "VAIC" },
             ],
         },
@@ -45,6 +45,7 @@ robotevents.authentication.setBearer("eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhd
 
     const matches = await team.matches({ event: ids });
     const outcomes = matches.group(match => match.teamOutcome(team.number));
+    console.log(outcomes.win);
     const matchesByEvent = matches.group(match => match.event.name)
 
     const wins = outcomes.win?.length ?? 0;
