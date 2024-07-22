@@ -9,7 +9,7 @@
 
 import fetch from "cross-fetch";
 import { ready, updateCurrent } from "./ratelimit";
-import { BEARER } from "./authentication";
+import { BEARER, COOKIE } from "./authentication";
 
 /**
  * Serializes parameters into a string to be passed to the API
@@ -70,6 +70,9 @@ async function doRequest<T = unknown>(url: URL): Promise<T> {
   if (BEARER) {
     headers["Authorization"] = `Bearer ${BEARER}`;
   }
+  if (COOKIE) {
+    headers["Cookie"] = COOKIE;
+  }
 
   // Make the initial request
   const response = await fetch(url.href, {
@@ -85,7 +88,10 @@ async function doRequest<T = unknown>(url: URL): Promise<T> {
 
   // If the response errored reject accordingly
   if (!response.ok) {
-    return Promise.reject(await response.text());
+    const status = response.status;
+    const statusText = response.statusText;
+    const text = await response.text();
+    return Promise.reject({ status, statusText, text });
   }
 
   return response.json();
