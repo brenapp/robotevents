@@ -1,6 +1,6 @@
 {
   "name": "robotevents",
-  "version": "4.0.2",
+  "version": "5.0.0",
   "description": "Programmatically access the RobotEvents API",
   "type": "module",
   "exports": "./out/main.js",
