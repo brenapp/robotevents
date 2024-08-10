@@ -1,4 +1,4 @@
-import { Client, programs } from "robotevents";
+import { Client, programs } from "../out/main.js";
 
 const client = Client({
   authorization: {
