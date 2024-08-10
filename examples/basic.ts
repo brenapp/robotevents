@@ -9,3 +9,6 @@ const client = Client({
 
 const result = await client.programs.get(programs.V5RC);
 console.log(result);
+
+const events = await client.events.search({ "sku[]": ["RE-VRC-23-1488"] });
+console.log(events);
