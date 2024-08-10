@@ -1,2 +1,1 @@
-curl -o robotevents.yaml https://www.robotevents.com/api/v2/swagger.yml
-npx swagger-typescript-api -p ./robotevents.yaml -o ../src/generated -n robotevents.ts --route-types --union-enums --extract-enums --disable-throw-on-error --no-client
+npx swagger-typescript-api -p ./robotevents.yaml -o ../src/generated -n robotevents.ts --route-types --union-enums --extract-enums --disable-throw-on-error --no-client --patch
