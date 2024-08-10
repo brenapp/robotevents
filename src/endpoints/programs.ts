@@ -1,16 +1,12 @@
-import { GeneratedApiClient, programs } from "../types.js";
+import { EndpointOptions, Program } from "../types.js";
 
-export function createProgramsEndpoint(api: GeneratedApiClient) {
+export function createProgramsEndpoint({ fetch }: EndpointOptions) {
   return {
     async get(id: number) {
-      return api.programs
-        .programGetProgram(id)
-        .then((response) => response.data);
+      return fetch<Program>(`/programs/${id}`);
     },
     async all() {
-      return api.programs
-        .programGetPrograms()
-        .then((response) => response.data);
+      return fetch<Program[]>("/programs");
     },
   };
 }

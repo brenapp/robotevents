@@ -1,5 +1,3 @@
-import { Api } from "./generated/robotevents.js";
-
 export type {
   Event,
   EventType,
@@ -62,4 +60,24 @@ export type ClientOptions = {
   };
 };
 
-export type GeneratedApiClient = Api<ClientOptions["authorization"]>;
+export type SuccessfulResponse<T> = {
+  success: true;
+  data: T;
+};
+
+export type FailedResponse = {
+  success: false;
+  error: unknown;
+};
+
+export type FetcherResponse<T> = SuccessfulResponse<T> | FailedResponse;
+
+export type Fetcher = <T>(
+  endpoint: string,
+  query?: Record<string, string | number | boolean>,
+  options?: RequestInit
+) => Promise<FetcherResponse<T>>;
+
+export type EndpointOptions = {
+  fetch: Fetcher;
+};
