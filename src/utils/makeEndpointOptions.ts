@@ -47,12 +47,19 @@ export function makeEndpointOptions(options: ClientOptions): EndpointOptions {
       headers,
       ...init,
     });
-
     const customFetch = options?.request?.customFetch ?? defaultFetch;
 
     const response = await customFetch(request);
     if (!response.ok) {
-      return { success: false, error: response } as FailedResponse;
+      try {
+        const data = await response.json();
+        return { success: false, error: data } as FailedResponse;
+      } catch (error) {
+        return {
+          success: false,
+          error: { message: response.statusText },
+        } as FailedResponse;
+      }
     }
 
     const data = (await response.json()) as T;
