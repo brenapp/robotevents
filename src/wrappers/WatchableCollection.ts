@@ -12,6 +12,7 @@
  *
  */
 import { EventEmitter } from "events";
+import { FetcherResponse } from "../types.js";
 
 interface WatchableCollectionEvents<T extends { id: I }, I> {
   add: (item: T) => void;
@@ -35,9 +36,9 @@ export default interface WatchableCollection<T extends { id: I }, I> {
   ): this;
 }
 
-type CheckFunction<T extends { id: I }, I> = (
-  self: WatchableCollection<T, I>
-) => Promise<T[]> | T[];
+type CheckFunction<T extends { id: I }, I> = () => Promise<
+  FetcherResponse<T[] | undefined>
+>;
 
 export default class WatchableCollection<
   T extends { id: I },
@@ -386,7 +387,10 @@ export default class WatchableCollection<
     }
 
     this.interval = setInterval(async () => {
-      const current = new Map(makeMappable<T, I>(await this.check(this)));
+      const response = await this.check();
+      const current = new Map(
+        makeMappable<T, I>(response.success ? (response.data ?? []) : [])
+      );
 
       // Check for new and updated items
       for (const [id, value] of current) {
@@ -439,10 +443,11 @@ export default class WatchableCollection<
    * @param check
    */
   static async create<T extends { id: number }>(
-    check: () => Promise<T[]> | T[]
+    check: CheckFunction<T, number>
   ) {
-    const inital = makeMappable(await check());
-    return new WatchableCollection(inital, check);
+    const response = await check();
+    const initial = makeMappable(response.success ? (response.data ?? []) : []);
+    return new WatchableCollection(initial, check);
   }
 }
 

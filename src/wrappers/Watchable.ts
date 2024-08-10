@@ -4,7 +4,7 @@
 
 import { EventEmitter } from "events";
 
-export type Get<T> = () => Promise<T> | T;
+export type Get<T> = () => Promise<T | undefined> | T | undefined;
 
 export type EntriesIterable<T> =
   | Record<string | number | symbol, T>

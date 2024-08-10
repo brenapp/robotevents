@@ -33,39 +33,39 @@ export type EventType = "tournament" | "league" | "workshop" | "virtual";
 
 export interface Program {
   /** @format i32 */
-  id?: number;
-  abbr?: string;
-  name?: string;
+  id: number;
+  abbr: string;
+  name: string;
 }
 
 export type EventLevel = "World" | "National" | "Regional" | "State" | "Signature" | "Other";
 
 export interface Location {
-  venue?: string;
-  address_1?: string;
+  venue: string;
+  address_1: string;
   address_2?: string;
-  city?: string;
-  region?: string;
-  postcode?: string;
-  country?: string;
-  coordinates?: Coordinates;
+  city: string;
+  region: string;
+  postcode: string;
+  country: string;
+  coordinates: Coordinates;
 }
 
 export interface Coordinates {
   /** @format float */
-  lat?: number;
+  lat: number;
   /** @format float */
-  lon?: number;
+  lon: number;
 }
 
 export type Locations = Record<string, Location>;
 
 export interface Division {
   /** @format int32 */
-  id?: number;
-  name?: string;
+  id: number;
+  name: string;
   /** @format int32 */
-  order?: number;
+  order: number;
 }
 
 export type Grade = "College" | "High School" | "Middle School" | "Elementary School";
@@ -125,12 +125,12 @@ export interface AllianceTeam {
 
 export interface Ranking {
   /** @format int32 */
-  id?: number;
-  event?: IdInfo;
-  division?: IdInfo;
+  id: number;
+  event: IdInfo;
+  division: IdInfo;
   /** @format int32 */
-  rank?: number;
-  team?: IdInfo;
+  rank: number;
+  team: IdInfo;
   /** @format int32 */
   wins?: number;
   /** @format int32 */
@@ -152,30 +152,30 @@ export interface Ranking {
 
 export interface Skill {
   /** @format int32 */
-  id?: number;
-  event?: IdInfo;
-  team?: IdInfo;
-  type?: SkillType;
-  season?: IdInfo;
-  division?: IdInfo;
+  id: number;
+  event: IdInfo;
+  team: IdInfo;
+  type: SkillType;
+  season: IdInfo;
+  division: IdInfo;
   /** @format int32 */
-  rank?: number;
+  rank: number;
   /** @format int32 */
-  score?: number;
+  score: number;
   /** @format int32 */
-  attempts?: number;
+  attempts: number;
 }
 
 export type SkillType = "driver" | "programming" | "package_delivery_time";
 
 export interface Award {
   /** @format int32 */
-  id?: number;
-  event?: IdInfo;
+  id: number;
+  event: IdInfo;
   /** @format int32 */
-  order?: number;
-  title?: string;
-  qualifications?: string[];
+  order: number;
+  title: string;
+  qualifications: string[];
   /** Some awards are given out per tournament or division */
   designation?: AwardDesignationEnum;
   classification?: AwardClassificationEnum;
@@ -190,77 +190,77 @@ export interface TeamAwardWinner {
 
 export interface Season {
   /** @format int32 */
-  id?: number;
-  name?: string;
-  program?: IdInfo;
+  id: number;
+  name: string;
+  program: IdInfo;
   /** @format date-time */
-  start?: string;
+  start: string;
   /** @format date-time */
-  end?: string;
+  end: string;
   /** @format int32 */
-  years_start?: number;
+  years_start: number;
   /** @format int32 */
-  years_end?: number;
+  years_end: number;
 }
 
 export interface Error {
   /** @format int32 */
-  code?: number;
-  message?: string;
+  code: number;
+  message: string;
 }
 
 export interface PageMeta {
-  current_page?: number;
-  first_page_url?: string;
-  from?: number;
-  last_page?: number;
-  last_page_url?: string;
-  next_page_url?: string;
-  path?: string;
-  per_page?: number;
-  prev_page_url?: string;
-  to?: number;
-  total?: number;
+  current_page: number;
+  first_page_url: string;
+  from: number;
+  last_page: number;
+  last_page_url: string;
+  next_page_url: string;
+  path: string;
+  per_page: number;
+  prev_page_url: string;
+  to: number;
+  total: number;
 }
 
 export interface PaginatedTeam {
-  meta?: PageMeta;
-  data?: Team[];
+  meta: PageMeta;
+  data: Team[];
 }
 
 export interface PaginatedEvent {
-  meta?: PageMeta;
-  data?: Event[];
+  meta: PageMeta;
+  data: Event[];
 }
 
 export interface PaginatedAward {
-  meta?: PageMeta;
-  data?: Award[];
+  meta: PageMeta;
+  data: Award[];
 }
 
 export interface PaginatedSeason {
-  meta?: PageMeta;
-  data?: Season[];
+  meta: PageMeta;
+  data: Season[];
 }
 
 export interface PaginatedRanking {
-  meta?: PageMeta;
-  data?: Ranking[];
+  meta: PageMeta;
+  data: Ranking[];
 }
 
 export interface PaginatedMatch {
-  meta?: PageMeta;
-  data?: MatchObj[];
+  meta: PageMeta;
+  data: MatchObj[];
 }
 
 export interface PaginatedSkill {
-  meta?: PageMeta;
-  data?: Skill[];
+  meta: PageMeta;
+  data: Skill[];
 }
 
 export interface PaginatedProgram {
-  meta?: PageMeta;
-  data?: Program[];
+  meta: PageMeta;
+  data: Program[];
 }
 
 export type AllianceColorEnum = "red" | "blue";

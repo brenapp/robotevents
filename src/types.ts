@@ -1,3 +1,5 @@
+import { PageMeta } from "./generated/robotevents.js";
+
 export type {
   Event,
   EventType,
@@ -43,6 +45,10 @@ export const programs = {
 
 export type ProgramAbbr = keyof typeof programs;
 
+export type WithRequiredId<T> = T extends { id?: unknown }
+  ? Omit<T, "id"> & Required<Pick<T, "id">>
+  : T;
+
 export type IdInfo<T> = {
   id: number;
   name: string;
@@ -70,14 +76,34 @@ export type FailedResponse = {
   error: unknown;
 };
 
+export type FetcherQueryParams = Record<
+  string,
+  string | number | boolean | string[] | number[] | boolean[]
+>;
+
 export type FetcherResponse<T> = SuccessfulResponse<T> | FailedResponse;
 
-export type Fetcher = <T>(
+export type Fetcher = <T, Q extends FetcherQueryParams>(
   endpoint: string,
-  query?: Record<string, string | number | boolean>,
+  query?: Q,
   options?: RequestInit
-) => Promise<FetcherResponse<T>>;
+) => Promise<FetcherResponse<WithRequiredId<T>>>;
+
+export type PaginatedData<T> = {
+  meta?: PageMeta;
+  data?: T[];
+};
+
+export type PaginatedFetch = <
+  T extends PaginatedData<unknown>,
+  Q extends FetcherQueryParams,
+>(
+  endpoint: string,
+  query?: Q,
+  options?: RequestInit
+) => Promise<FetcherResponse<T["data"]>>;
 
 export type EndpointOptions = {
   fetch: Fetcher;
+  paginatedFetch: PaginatedFetch;
 };
