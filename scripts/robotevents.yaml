@@ -1,0 +1,1613 @@
+openapi: 3.0.0
+paths:
+  /events:
+    get:
+      description: Gets a List of Events
+      tags:
+        - Event
+      operationId: 'event_getEvents'
+      responses:
+        "200":
+          description: List of Events
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedEvent"
+      parameters:
+        - name: id[]
+          description: Filter by Event ID
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+        - name: sku[]
+          description: Filter by Event SKU
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: team[]
+          description: Filter by Teams that participated in the Event
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+        - name: season[]
+          description: Filter by the Season that the Event belonged to
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+        - name: start
+          description: Filter by the Start Date of the Event
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: end
+          description: Filter by the End Date of the Event
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: region
+          description: Filter by the region of the event
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: level[]
+          description: Filter by the Event Level
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - World
+                - National
+                - State
+                - Signature
+                - Other
+        - name: myEvents
+          description: Only show events that have at least one registered team associated with the authenticated user.
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: eventTypes[]
+          description: Filter by the Event Type
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/EventType"
+  "/events/{id}":
+    get:
+      description: Gets a Single Event
+      tags:
+        - Event
+      operationId: 'event_getEvent'
+      responses:
+        "200":
+          description: A single Event
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        "404":
+          description: Specified Event not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      parameters:
+        - name: id
+          description: The ID of the Event
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+  "/events/{id}/teams":
+    get:
+      description: Gets a List of Teams present at a given Event
+      tags:
+        - Event
+      operationId: 'event_getTeams'
+      responses:
+        "200":
+          description: List of Teams
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedTeam"
+      parameters:
+        - name: id
+          description: The ID of the Event
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: number[]
+          description: Filter by Team Number
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: registered
+          description: Filter by whether the Team is Registered
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: grade[]
+          description: Filter by the Grade of the Team
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - College
+                - High School
+                - Middle School
+                - Elementary School
+        - name: country[]
+          description: Filter by the Country of the Team
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: myTeams
+          description: Only show teams associated with the authenticated user.
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+  "/events/{id}/skills":
+    get:
+      description: Gets a List of Skills runs performed at a given Event
+      tags:
+        - Event
+      operationId: 'event_getSkills'
+      responses:
+        "200":
+          description: A list of Skills
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedSkill"
+      parameters:
+        - name: id
+          description: The ID of the Event
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: team[]
+          description: Filter by Team Number that performed the Skills run
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+        - name: type[]
+          description: Filter by Type of Skills run
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - driver
+                - programming
+  "/events/{id}/awards":
+    get:
+      description: Gets a List of Awards at a given Event
+      tags:
+        - Event
+      operationId: 'event_getAwards'
+      responses:
+        "200":
+          description: A list of Awards
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedAward"
+      parameters:
+        - name: id
+          description: The ID of the Event
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: team[]
+          description: Filter by Team Number that the Award was awarded to
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+        - name: winner[]
+          description: Filter by the Winner of the Award (can include people's names, etc.)
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+  "/events/{id}/divisions/{div}/matches":
+    get:
+      description: Gets a List of Matches for a single Division of an Event
+      operationId: 'event_getDivisionMatches'
+      tags:
+        - Event
+      responses:
+        "200":
+          description: A list of Matches
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedMatch"
+      parameters:
+        - name: id
+          description: The ID of the Event
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: div
+          description: The ID of the Division
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: team[]
+          description: Filter to only return Matches which involved given Teams
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+        - name: round[]
+          description: |
+            Filter by the Round of the Match.
+            Some typical values are shown below:
+            - 1 - Practice
+            - 2 - Qualification
+            - 3 - Quarter-Finals
+            - 4 - Semi-Finals
+            - 5 - Finals
+            - 6 - Round of 16
+            - etc.
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+        - name: instance[]
+          description: Filter by the Instance of the Match. This is used to describe which
+            Quarter-Final match (for example) is being played
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+        - name: matchnum[]
+          description: Filter by the MatchNum of the Match. This is the actual Match
+            "number", e.g. Qualification Match, or the individual match in a
+            Best of 3
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+  "/events/{id}/divisions/{div}/finalistRankings":
+    get:
+      description: Gets a List of Finalist Rankings for a single Division of an Event
+      operationId: 'event_getDivisionFinalistRankings'
+      tags:
+        - Event
+      responses:
+        "200":
+          description: A list of Rankings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedRanking"
+    parameters:
+      - name: id
+        description: The ID of the Event
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: div
+        description: The ID of the Division
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: team[]
+        description: Filter to only return Rankings which involve given Teams
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int32
+      - name: rank[]
+        description: Filter by the Rank
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int32
+
+  "/events/{id}/divisions/{div}/rankings":
+    get:
+      description: Gets a List of Rankings for a single Division of an Event
+      operationId: 'event_getDivisionRankings'
+      tags:
+        - Event
+      responses:
+        "200":
+          description: A list of Rankings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedRanking"
+      parameters:
+        - name: id
+          description: The ID of the Event
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: div
+          description: The ID of the Division
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: team[]
+          description: Filter to only return Rankings which involve given Teams
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+        - name: rank[]
+          description: Filter by the Rank
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+  /teams:
+    get:
+      description: Gets a List of Teams
+      operationId: 'team_getTeams'
+      tags:
+        - Team
+      responses:
+        "200":
+          description: List of Teams
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedTeam"
+      parameters:
+        - name: id[]
+          description: Filter by Team ID
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+        - name: number[]
+          description: Filter by Team Number
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: event[]
+          description: Filter by Events that Teams have attended
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+        - name: registered
+          description: Filter by whether or not the Team is Registered
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: program[]
+          description: Filter by the Program that the Team is part of
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: grade[]
+          description: Filter by the Grade of the Team
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - College
+                - High School
+                - Middle School
+                - Elementary School
+        - name: country[]
+          description: Filter by the Country of the Team
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: myTeams
+          description: Only show teams associated with the authenticated user.
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+  "/teams/{id}":
+    get:
+      description: Gets a Single Team
+      operationId: 'team_getTeam'
+      tags:
+        - Team
+      responses:
+        "200":
+          description: A single Team
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+        "404":
+          description: Specified Team not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      parameters:
+        - name: id
+          description: The ID of the Team
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+  "/teams/{id}/events":
+    get:
+      description: Gets a List of Events that a given Team has attended
+      operationId: 'team_getEvents'
+      tags:
+        - Team
+      responses:
+        "200":
+          description: List of Events
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedEvent"
+      parameters:
+        - name: id
+          description: The ID of the Team
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: sku[]
+          description: Filter by Event SKU
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: season[]
+          description: Filter by the Season that the Event belonged to
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+        - name: start
+          description: Filter by the Start Date of the Event
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: end
+          description: Filter by the End Date of the Event
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: level[]
+          description: Filter by the Event Level
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - World
+                - National
+                - State
+                - Signature
+                - Other
+  "/teams/{id}/matches":
+    get:
+      description: Gets a List of Matches that a given Team has played in
+      operationId: 'team_getMatches'
+      tags:
+        - Team
+      responses:
+        "200":
+          description: List of Matches
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedMatch"
+      parameters:
+        - name: id
+          description: The ID of the Team
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: event[]
+          description: Filter by the Event the Match was performed at
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+        - name: season[]
+          description: Filter by the Season during which the Match was played
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+        - name: round[]
+          description: |
+            Filter by the Round of the Match.
+            Some typical values are shown below:
+            - 1 - Practice
+            - 2 - Qualification
+            - 3 - Quarter-Finals
+            - 4 - Semi-Finals
+            - 5 - Finals
+            - 6 - Round of 16
+            - etc.
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+        - name: instance[]
+          description: Filter by the Instance of the Match. This is used to describe which
+            Quarter-Final match (for example) is being played
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+        - name: matchnum[]
+          description: Filter by the MatchNum of the Match. This is the actual Match
+            "number", e.g. Qualification Match, or the individual match in a
+            Best of 3
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+  "/teams/{id}/rankings":
+    get:
+      description: Gets a List of Rankings for a given Team
+      operationId: 'team_getRankings'
+      tags:
+        - Team
+      responses:
+        "200":
+          description: List of Rankings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedRanking"
+      parameters:
+        - name: id
+          description: The ID of the Team
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: event[]
+          description: Filter by the Event in which the Ranking was achieved
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+        - name: rank[]
+          description: Filter by the Rank
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+        - name: season[]
+          description: Filter by the Season during which the Ranking was
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+  "/teams/{id}/skills":
+    get:
+      description: Gets a List of Skills runs that a given Team has performed
+      operationId: 'team_getSkills'
+      tags:
+        - Team
+      responses:
+        "200":
+          description: A list of Skills
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedSkill"
+      parameters:
+        - name: id
+          description: The ID of the Team
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: event[]
+          description: Filter by the Event at which the Skills run was performed
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+        - name: type[]
+          description: Filter by Type of Skills run
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - driver
+                - programming
+        - name: season[]
+          description: Filter by the Season during which the Skills run was performed
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+  "/teams/{id}/awards":
+    get:
+      description: Gets a List of Awards that a given Team has received
+      operationId: 'team_getAwards'
+      tags:
+        - Team
+      responses:
+        "200":
+          description: List of Awards
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedAward"
+      parameters:
+        - name: id
+          description: The ID of the Team
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: event[]
+          description: Filter by the Event at which the Award was given out
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+        - name: season[]
+          description: Filter by the Season in which the Award was given out
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+  /programs/{id}:
+    get:
+      description: Find a single Program by ID
+      operationId: 'program_getProgram'
+      tags:
+        - Program
+      parameters:
+        - name: id
+          description: The Program ID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: Single Program
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Program"
+  /programs:
+    get:
+      description: Gets a List of Programs
+      operationId: 'program_getPrograms'
+      tags:
+        - Program
+      responses:
+        "200":
+          description: List of Programs
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedProgram"
+      parameters:
+        - name: id[]
+          description: Filter by program ID
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+  /seasons:
+    get:
+      description: Gets a List of Seasons
+      operationId: 'season_getSeasons'
+      tags:
+        - Season
+      responses:
+        "200":
+          description: List of Seasons
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedSeason"
+      parameters:
+        - name: id[]
+          description: Filter by Season ID
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+        - name: program[]
+          description: Filter by Program to which the Season belongs
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: team[]
+          description: Filter by seasons in which the specified teams were active
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: start
+          description: Filter by Start Date of the Season
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: end
+          description: Filter by End Date of the Season
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: active
+          description: Only include active Seasons
+          required: false
+          in: query
+          schema:
+            type: boolean
+  "/seasons/{id}":
+    get:
+      description: Gets a single Season
+      operationId: 'season_getSeason'
+      tags:
+        - Season
+      responses:
+        "200":
+          description: A single Season
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Season"
+      parameters:
+        - name: id
+          description: The Season ID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+  "/seasons/{id}/events":
+    get:
+      description: Gets a List of Events for a given Season
+      operationId: 'season_getEvents'
+      tags:
+        - Season
+      responses:
+        "200":
+          description: List of Events
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedEvent"
+      parameters:
+        - name: id
+          description: The Season ID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: sku[]
+          description: Filter by Event SKU
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: team[]
+          description: Filter by Teams that participated in the Event
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int32
+        - name: start
+          description: Filter by the Start Date of the Event
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: end
+          description: Filter by the End Date of the Event
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: level[]
+          description: Filter by the Event Level
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - World
+                - National
+                - State
+                - Signature
+                - Other
+security:
+  - bearerAuth:
+      []
+info:
+  title: Public Robot Events API
+  version: 1.0.21
+  description: >
+    An API to access data on Robot Events officially.
+
+    ## Request Metadata
+
+    Pagination is performed the same way throughout each pageable endpoint using query parameters `page` and `per_page` (per_page default is 25 with a maximum of 250).
+    <br>
+    Please note that dates should be formatted according to RFC3339.
+servers:
+  - url: https://www.robotevents.com/api/v2
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Event:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        sku:
+          type: string
+        name:
+          type: string
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        season:
+          $ref: "#/components/schemas/IdInfo"
+        program:
+          $ref: "#/components/schemas/IdInfo"
+        location:
+          $ref: "#/components/schemas/Location"
+        locations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Locations"
+        divisions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Division"
+        level:
+          $ref: "#/components/schemas/EventLevel"
+        ongoing:
+          type: boolean
+        awards_finalized:
+          type: boolean
+        event_type:
+          $ref: "#/components/schemas/EventType"
+      required:
+        - id
+        - sku
+        - name
+        - season
+        - program
+        - location
+    EventType:
+      type: string
+      enum:
+        - tournament
+        - league
+        - workshop
+        - virtual
+    Program:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: i32
+        abbr:
+          type: string
+        name:
+          type: string
+    EventLevel:
+      type: string
+      enum:
+        - World
+        - National
+        - Regional
+        - State
+        - Signature
+        - Other
+    Location:
+      type: object
+      properties:
+        venue:
+          type: string
+        address_1:
+          type: string
+        address_2:
+          type: string
+        city:
+          type: string
+        region:
+          type: string
+        postcode:
+          type: string
+        country:
+          type: string
+        coordinates:
+          $ref: "#/components/schemas/Coordinates"
+    Coordinates:
+      type: object
+      properties:
+        lat:
+          type: number
+          format: float
+        lon:
+          type: number
+          format: float
+    Locations:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/Location'
+    Division:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        order:
+          type: integer
+          format: int32
+    Grade:
+      type: string
+      enum:
+        - College
+        - High School
+        - Middle School
+        - Elementary School
+    Team:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        number:
+          type: string
+        team_name:
+          type: string
+        robot_name:
+          type: string
+        organization:
+          type: string
+        location:
+          $ref: "#/components/schemas/Location"
+        registered:
+          type: boolean
+        program:
+          $ref: "#/components/schemas/IdInfo"
+        grade:
+          $ref: "#/components/schemas/Grade"
+      required:
+        - id
+        - number
+        - program
+    IdInfo:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        code:
+          type: string
+          nullable: true
+    MatchObj:
+      type: object
+      required:
+        - id
+        - event
+        - division
+        - round
+        - instance
+        - matchnum
+        - scored
+        - alliances
+        - name
+      properties:
+        id:
+          type: integer
+          format: int32
+        event:
+          $ref: "#/components/schemas/IdInfo"
+        division:
+          $ref: "#/components/schemas/IdInfo"
+        round:
+          type: integer
+          format: int32
+        instance:
+          type: integer
+          format: int32
+        matchnum:
+          type: integer
+          format: int32
+        scheduled:
+          type: string
+          format: date-time
+        started:
+          type: string
+          format: date-time
+        field:
+          type: string
+        scored:
+          type: boolean
+        name:
+          type: string
+        alliances:
+          type: array
+          items:
+            $ref: "#/components/schemas/Alliance"
+    Alliance:
+      type: object
+      required:
+        - color
+        - score
+        - teams
+      properties:
+        color:
+          type: string
+          enum:
+            - red
+            - blue
+        score:
+          type: integer
+          format: int32
+        teams:
+          type: array
+          items:
+            $ref: "#/components/schemas/AllianceTeam"
+    AllianceTeam:
+      type: object
+      properties:
+        team:
+          $ref: "#/components/schemas/IdInfo"
+        sitting:
+          type: boolean
+    Ranking:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        event:
+          $ref: "#/components/schemas/IdInfo"
+        division:
+          $ref: "#/components/schemas/IdInfo"
+        rank:
+          type: integer
+          format: int32
+        team:
+          $ref: "#/components/schemas/IdInfo"
+        wins:
+          type: integer
+          format: int32
+        losses:
+          type: integer
+          format: int32
+        ties:
+          type: integer
+          format: int32
+        wp:
+          type: integer
+          format: int32
+        ap:
+          type: integer
+          format: int32
+        sp:
+          type: integer
+          format: int32
+        high_score:
+          type: integer
+          format: int32
+        average_points:
+          type: number
+        total_points:
+          type: integer
+          format: int32
+    Skill:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        event:
+          $ref: "#/components/schemas/IdInfo"
+        team:
+          $ref: "#/components/schemas/IdInfo"
+        type:
+          $ref: "#/components/schemas/SkillType"
+        season:
+          $ref: "#/components/schemas/IdInfo"
+        division:
+          $ref: "#/components/schemas/IdInfo"
+        rank:
+          type: integer
+          format: int32
+        score:
+          type: integer
+          format: int32
+        attempts:
+          type: integer
+          format: int32
+    SkillType:
+      type: string
+      enum:
+        - driver
+        - programming
+        - package_delivery_time
+    Award:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        event:
+          $ref: "#/components/schemas/IdInfo"
+        order:
+          type: integer
+          format: int32
+        title:
+          type: string
+        qualifications:
+          type: array
+          items:
+            type: string
+        designation:
+          type: string
+          enum: ['tournament', 'division']
+          nullable: true
+          description: Some awards are given out per tournament or division
+        classification:
+          type: string
+          enum: ['champion', 'finalist', 'semifinalist', 'quarterfinalist']
+          nullable: true
+        teamWinners:
+          type: array
+          items:
+            $ref: "#/components/schemas/TeamAwardWinner"
+        individualWinners:
+          type: array
+          items:
+            type: string
+    TeamAwardWinner:
+      type: object
+      properties:
+        division:
+          $ref: "#/components/schemas/IdInfo"
+        team:
+          $ref: "#/components/schemas/IdInfo"
+    Season:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        program:
+          $ref: "#/components/schemas/IdInfo"
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        years_start:
+          type: integer
+          format: int32
+        years_end:
+          type: integer
+          format: int32
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+    PageMeta:
+      type: object
+      properties:
+        current_page:
+          type: integer
+        first_page_url:
+          type: string
+        from:
+          type: integer
+        last_page:
+          type: integer
+        last_page_url:
+          type: string
+        next_page_url:
+          type: string
+        path:
+          type: string
+        per_page:
+          type: integer
+        prev_page_url:
+          type: string
+        to:
+          type: integer
+        total:
+          type: integer
+    PaginatedTeam:
+      type: object
+      properties:
+        meta:
+          $ref: "#/components/schemas/PageMeta"
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Team"
+    PaginatedEvent:
+      type: object
+      properties:
+        meta:
+          $ref: "#/components/schemas/PageMeta"
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Event"
+    PaginatedAward:
+      type: object
+      properties:
+        meta:
+          $ref: "#/components/schemas/PageMeta"
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Award"
+    PaginatedSeason:
+      type: object
+      properties:
+        meta:
+          $ref: "#/components/schemas/PageMeta"
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Season"
+    PaginatedRanking:
+      type: object
+      properties:
+        meta:
+          $ref: "#/components/schemas/PageMeta"
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Ranking"
+    PaginatedMatch:
+      type: object
+      properties:
+        meta:
+          $ref: "#/components/schemas/PageMeta"
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/MatchObj"
+    PaginatedSkill:
+      type: object
+      properties:
+        meta:
+          $ref: "#/components/schemas/PageMeta"
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Skill"
+    PaginatedProgram:
+      type: object
+      properties:
+        meta:
+          $ref: "#/components/schemas/PageMeta"
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Program"

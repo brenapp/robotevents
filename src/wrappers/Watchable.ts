@@ -1,15 +1,14 @@
 /**
  * Makes a class Watchable
- *
- * For example, allows you to monitor events for updates
- *
  */
 
 import { EventEmitter } from "events";
 
 export type Get<T> = () => Promise<T> | T;
 
-export type EntriesIterable<T> = Record<string | number | symbol, T> | ArrayLike<T>;
+export type EntriesIterable<T> =
+  | Record<string | number | symbol, T>
+  | ArrayLike<T>;
 
 interface WatchableEvents<T, I extends keyof T = keyof T> {
   update: (key: I, current: T[I], old: T[I]) => void;
@@ -65,7 +64,7 @@ abstract class Watchable<T> extends EventEmitter {
     this.interval = setInterval(async () => {
       if (!this.check) return;
 
-      const state = await this.check() as EntriesIterable<T>;
+      const state = (await this.check()) as EntriesIterable<T>;
 
       for (const [key, value] of Object.entries(state)) {
         // @ts-ignore
