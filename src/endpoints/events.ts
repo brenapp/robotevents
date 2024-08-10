@@ -1,7 +1,6 @@
 import { Events } from "../generated/robotevents.js";
-import { EndpointOptions, TeamData } from "../types.js";
+import { EndpointOptions } from "../types.js";
 import { Event } from "../wrappers/Event.js";
-import { Team } from "../wrappers/Team.js";
 
 export function createEventsEndpoint(api: EndpointOptions) {
   return {
@@ -9,7 +8,7 @@ export function createEventsEndpoint(api: EndpointOptions) {
       const response = await api.paginatedFetch<
         Events.EventGetEvents.ResponseBody,
         Events.EventGetEvents.RequestQuery
-      >("/teams", options);
+      >("/events", options);
 
       return response.success
         ? (response.data?.map((data) => new Event(data, api)) ?? [])
