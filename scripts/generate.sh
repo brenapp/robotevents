@@ -1,0 +1,1 @@
+npx swagger-typescript-api -p ./robotevents.yaml -o ../src/generated -n robotevents.ts --route-types --union-enums --extract-enums --disable-throw-on-error --no-client --patch

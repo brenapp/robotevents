@@ -1,16 +1,20 @@
 {
   "name": "robotevents",
-  "version": "4.0.1",
+  "version": "5.0.0",
   "description": "Programmatically access the RobotEvents API",
-  "main": "out/main.js",
-  "types": "out/main.d.ts",
-  "repository": "https://github.com/MayorMonty/robotevents",
+  "type": "module",
+  "exports": "./out/main.js",
+  "repository": "https://github.com/brenapp/robotevents",
   "author": "Brendan McGuire",
   "license": "MIT",
   "private": false,
+  "workspaces": [
+    "examples"
+  ],
   "scripts": {
     "prepublishOnly": "rm -rf out && tsc -d",
-    "build": "tsc"
+    "build": "tsc",
+    "test": "vitest"
   },
   "files": [
     "out",
@@ -27,6 +31,8 @@
     "lib": "./src"
   },
   "devDependencies": {
-    "typescript": "^5.3.3"
+    "swagger-typescript-api": "^13.0.16",
+    "typescript": "^5.3.3",
+    "vitest": "^2.0.5"
   }
 }

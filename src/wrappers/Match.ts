@@ -1,15 +1,4 @@
-import { IdInfo } from "./index";
-
-
-export type Color = "red" | "blue";
-export interface Alliance {
-  color: Color;
-  score: number;
-  teams: {
-    team: IdInfo;
-    sitting: boolean;
-  }[];
-}
+import { Alliance, Color, IdInfo, MatchData } from "../types.js";
 
 export enum Round {
   Practice = 1,
@@ -19,65 +8,21 @@ export enum Round {
   Finals = 5,
   RoundOf16 = 6,
   TopN = 15,
-  RoundRobin = 16
-}
-
-/**
- * Information about a specific match played
- */
-export interface MatchData {
-  id: number;
-
-  // The event the match was played at
-  event: IdInfo;
-
-  // The division where the match was played
-  division: IdInfo;
-
-  // The round the event took place in (Practice, Quals, R16 QF, SF, F)
-  round: Round;
-
-  // The instance the event took place in. For example the first R16 match
-  // played at an event (between the 16th and 1st seed in VRC) has instance 1
-  instance: number;
-
-  // The match number in a specific match instance. In most cases this is one,
-  // but in the case of ties or competitions with multiple elimination it can be
-  // higher
-  matchnum: number;
-
-  // When the match is scheduled to start, in an ISO date time string
-  scheduled: string;
-
-  // When the match actually started, in an ISO date time string
-  started: string;
-
-  // The field name that the match took place on
-  field: string;
-
-  // Whether the match score has been entered into RobotEvents
-  scored: boolean;
-
-  // The name of the Match. Looks like Q15 or R16 1-1 or F3
-  name: string;
-
-  // The alliances involved in the match
-  alliances: Alliance[];
+  RoundRobin = 16,
 }
 
 export class Match implements MatchData {
-
   id = 0;
   event = {
     id: 0,
     name: "",
-    code: ""
-  }
+    code: "",
+  };
   division = {
     id: 0,
     name: "",
-    code: ""
-  }
+    code: "",
+  };
   round = Round.Qualification;
   instance = 0;
   matchnum = 0;
@@ -88,10 +33,9 @@ export class Match implements MatchData {
   name = "";
   alliances: Alliance[] = [];
 
-
   constructor(data: MatchData) {
     Object.assign(this, data);
-  };
+  }
 
   getData(): MatchData {
     return {
@@ -106,31 +50,31 @@ export class Match implements MatchData {
       field: this.field,
       scored: this.scored,
       name: this.name,
-      alliances: this.alliances
-    }
+      alliances: this.alliances,
+    };
   }
 
   toJSON(): MatchData {
-    return this.getData()
+    return this.getData();
   }
 
   /**
    * Gets the alliance with the given color
-   * 
+   *
    * @param color Red or Blue
    * @returns The alliance with the given color
    */
   alliance(color: Color): Alliance {
-    return this.alliances.find(a => a.color === color) as Alliance;
-  };
+    return this.alliances.find((a) => a.color === color) as Alliance;
+  }
 
   /**
    * Gets the outcome of the match
-   * 
+   *
    * @example
    * const team = await robotevents.teams.get("3796B");
    * const matches = await team.matches();
-   * 
+   *
    * for (const match of match) {
    *  const { winner, loser } = match.allianceOutcome();
    *  console.log(winner.color, loser.color)
@@ -138,22 +82,22 @@ export class Match implements MatchData {
    *
    * @returns The winning and losing alliance, or null if the match is unscored or tied
    */
-  allianceOutcome(): { winner: Alliance | null, loser: Alliance | null } {
+  allianceOutcome(): { winner: Alliance | null; loser: Alliance | null } {
     const red = this.alliance("red");
     const blue = this.alliance("blue");
 
     if (red.score > blue.score) {
       return { winner: red, loser: blue };
     } else if (blue.score > red.score) {
-      return { winner: blue, loser: red }
+      return { winner: blue, loser: red };
     } else {
       return { winner: null, loser: null };
     }
-  };
+  }
 
   /**
    * Gets the outcome of the match for a specific team
-   * 
+   *
    * @param team Team number
    */
   teamOutcome(team: string): "win" | "loss" | "tie" | "unscored" {
@@ -167,27 +111,29 @@ export class Match implements MatchData {
       return "tie";
     }
 
-    if (winner.teams.find(t => t.team.code === team)) {
+    if (winner.teams.find((t) => t.team?.code === team)) {
       return "win";
-    } else if (loser.teams.find(t => t.team.code === team)) {
+    } else if (loser.teams.find((t) => t.team?.code === team)) {
       return "loss";
     } else {
       return "tie";
-    };
-  };
+    }
+  }
 
   /**
    * Gets all of the teams in the match, excludes non-sitting teams (i.e. teams on the alliance who
-   * do not play, very rare in modern competitions) 
+   * do not play, very rare in modern competitions)
    * @returns List of all teams in the match
    */
   teams(): IdInfo<string>[] {
-    return this.alliances.flatMap(a => a.teams.filter(t => !t.sitting).map(t => t.team))
+    return this.alliances.flatMap((a) =>
+      a.teams.filter((t) => !t.sitting).map((t) => t.team!)
+    );
   }
 
   /**
    * Gets a short name for this match based on the round. Short name looks something like
-   * 
+   *
    * ```
    * P 13
    * Q 23
@@ -198,7 +144,7 @@ export class Match implements MatchData {
    * F 3 // IQ finals matches
    * RR 2-1 // Round Robin
    * ```
-   * 
+   *
    */
   shortName(): string {
     const id = this.instance + "-" + this.matchnum;
@@ -230,24 +176,6 @@ export class Match implements MatchData {
       default: {
         return this.name;
       }
-    };
-
-  };
-
-};
-
-export interface MatchOptionsFromEvent {
-  team?: number[];
-
-  round?: Round[];
-  instance?: number[];
-  matchnum?: number[];
-}
-
-export interface MatchOptionsFromTeam {
-  event?: number[];
-  season?: number[];
-  round?: Round[];
-  instance?: number[];
-  matchnum?: number[];
+    }
+  }
 }

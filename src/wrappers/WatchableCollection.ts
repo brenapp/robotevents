@@ -5,14 +5,14 @@
  *
  * const teams = await event.teams();
  * teams.watch();
- * 
+ *
  * teams.on("changed", teams => {
  *  const regions = teams.group(team => team.location.region);
  * });
- * 
+ *
  */
 import { EventEmitter } from "events";
-import Watchable from "./Watchable";
+import { FetcherResponse } from "../types.js";
 
 interface WatchableCollectionEvents<T extends { id: I }, I> {
   add: (item: T) => void;
@@ -36,13 +36,13 @@ export default interface WatchableCollection<T extends { id: I }, I> {
   ): this;
 }
 
-type CheckFunction<T extends { id: I }, I> = (
-  self: WatchableCollection<T, I>
-) => Promise<T[]> | T[];
+type CheckFunction<T extends { id: I }, I> = () => Promise<
+  FetcherResponse<T[] | undefined>
+>;
 
 export default class WatchableCollection<
   T extends { id: I },
-  I = number
+  I = number,
 > extends EventEmitter {
   // Holds all of contents of the collection
   private contents: Map<I, T> = new Map<I, T>();
@@ -309,20 +309,19 @@ export default class WatchableCollection<
 
   /**
    * Group the current contents of the WatchableCollection into a object by the discriminator function.
-   * 
+   *
    * @example
    * const event = robotevents.events.get(sku);
    * const matches = event.matches();
-   * 
+   *
    * const rounds = matches.group(match => match.round);
    * console.log(rounds[Round.RoundOf16]);
-   * 
+   *
    * @param discriminator Function used to sort the objects of the collection into groups
    */
   group<K extends string | number | symbol>(
     discriminator: (item: T, id: I, collection: WatchableCollection<T, I>) => K
   ): Partial<Record<K, T[]>> {
-
     let result = Object.create(null) as Partial<Record<K, T[]>>;
 
     for (const [id, item] of this.contents) {
@@ -332,25 +331,23 @@ export default class WatchableCollection<
         result[key]?.push(item);
       } else {
         result[key] = [item];
-      };
-
-    };
+      }
+    }
 
     return result;
-  };
+  }
 
   /**
    * Group the current contents of the WatchableCollection into a map by the discriminator function.
    * Different from WatchableCollection#group, this method returns a Map so the return values can be
    * anything that can be used as a key in a Map.
-   * 
+   *
    * @param discriminator Function used to sort the objects of the collection into groups
    * @returns Map of the grouped items
    */
   groupToMap<K>(
     discriminator: (item: T, id: I, collection: WatchableCollection<T, I>) => K
   ): Map<K, T[]> {
-
     let result = new Map<K, T[]>();
 
     for (const [id, item] of this.contents) {
@@ -360,9 +357,8 @@ export default class WatchableCollection<
         result.set(key, [...result.get(key)!, item]);
       } else {
         result.set(key, [item]);
-      };
-
-    };
+      }
+    }
 
     return result;
   }
@@ -391,7 +387,10 @@ export default class WatchableCollection<
     }
 
     this.interval = setInterval(async () => {
-      const current = new Map(makeMappable<T, I>(await this.check(this)));
+      const response = await this.check();
+      const current = new Map(
+        makeMappable<T, I>(response.success ? (response.data ?? []) : [])
+      );
 
       // Check for new and updated items
       for (const [id, value] of current) {
@@ -444,10 +443,11 @@ export default class WatchableCollection<
    * @param check
    */
   static async create<T extends { id: number }>(
-    check: () => Promise<T[]> | T[]
+    check: CheckFunction<T, number>
   ) {
-    const inital = makeMappable(await check());
-    return new WatchableCollection(inital, check);
+    const response = await check();
+    const initial = makeMappable(response.success ? (response.data ?? []) : []);
+    return new WatchableCollection(initial, check);
   }
 }
 
