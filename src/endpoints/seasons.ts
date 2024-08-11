@@ -1,4 +1,10 @@
-import { EndpointOptions } from "../types.js";
+import {
+  EndpointOptions,
+  ProgramCode,
+  programs,
+  seasons,
+  Year,
+} from "../types.js";
 import { Seasons } from "../generated/robotevents.js";
 
 export function createSeasonsEndpoints({
@@ -6,12 +12,18 @@ export function createSeasonsEndpoints({
   paginatedFetch,
 }: EndpointOptions) {
   return {
+    ...seasons,
     async get(id: number) {
       return fetch<
         Seasons.SeasonGetSeason.ResponseBody,
         Seasons.SeasonGetSeason.RequestQuery
       >(`/seasons/${id}`);
     },
+
+    current(program: ProgramCode, year: Year = "2024-2025") {
+      return seasons[program][year];
+    },
+
     async all(options?: Seasons.SeasonGetSeasons.RequestQuery) {
       return paginatedFetch<
         Seasons.SeasonGetSeasons.ResponseBody,
