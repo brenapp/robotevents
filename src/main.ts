@@ -7,6 +7,10 @@ import { makeEndpointOptions } from "./utils/makeEndpointOptions.js";
 import type { ClientOptions, EndpointOptions } from "./types.ts";
 export * from "./types.js";
 
+export { Team } from "./wrappers/Team.js";
+export { Event } from "./wrappers/Event.js";
+export { Match } from "./wrappers/Match.js";
+
 export function Client(options: ClientOptions) {
   const api: EndpointOptions = makeEndpointOptions(options);
   return {
