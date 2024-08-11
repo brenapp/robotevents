@@ -26,6 +26,13 @@ export type {
   AwardClassificationEnum as AwardClassificationEnum,
 } from "./generated/robotevents.js";
 
+export type {
+  Events as EventsEndpoints,
+  Teams as TeamsEndpoints,
+  Programs as ProgramsEndpoints,
+  Seasons as SeasonsEndpoints,
+} from "./generated/robotevents.js";
+
 export type { Round } from "./wrappers/Match.js";
 
 export const programs = {
@@ -44,6 +51,7 @@ export const programs = {
 } as const;
 
 export type ProgramAbbr = keyof typeof programs;
+export type ProgramCode = (typeof programs)[ProgramAbbr];
 
 export type WithRequiredId<T> = T extends { id?: unknown }
   ? Omit<T, "id"> & Required<Pick<T, "id">>
