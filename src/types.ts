@@ -1,7 +1,7 @@
 import { PageMeta } from "./generated/robotevents.js";
 
 export type {
-  Event,
+  Event as EventData,
   EventType,
   Program,
   EventLevel,

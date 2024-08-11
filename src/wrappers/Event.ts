@@ -1,10 +1,5 @@
 import Watchable from "./Watchable.js";
-import {
-  EndpointOptions,
-  Event as EventData,
-  IdInfo,
-  ProgramAbbr,
-} from "../types.js";
+import { EndpointOptions, EventData, IdInfo, ProgramAbbr } from "../types.js";
 import { EventLevel, Events, EventType } from "../generated/robotevents.js";
 import WatchableCollection from "./WatchableCollection.js";
 import { Team } from "./Team.js";

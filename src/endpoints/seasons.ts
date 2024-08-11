@@ -1,4 +1,4 @@
-import { EndpointOptions, Event, Season } from "../types.js";
+import { EndpointOptions } from "../types.js";
 import { Seasons } from "../generated/robotevents.js";
 
 export function createSeasonsEndpoints({
