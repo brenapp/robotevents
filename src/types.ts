@@ -33,7 +33,7 @@ export type {
   Seasons as SeasonsEndpoints,
 } from "./generated/robotevents.js";
 
-export type { Round } from "./wrappers/Match.js";
+export { Round } from "./wrappers/Match.js";
 
 export const programs = {
   V5RC: 1,
