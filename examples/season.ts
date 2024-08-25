@@ -22,11 +22,11 @@ let output: Record<ProgramCode, Record<string, number>> = {
   [programs.VRAD]: {},
   [programs.WORKSHOP]: {},
 };
-if (seasons.success) {
+if (seasons.data) {
   for (const season of seasons.data) {
-    output[season.program.id as ProgramCode][
+    output[season.program!.id as ProgramCode][
       `${season.years_start}-${season.years_end}`
-    ] = season.id;
+    ] = season.id!;
   }
 }
 
