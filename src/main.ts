@@ -22,6 +22,7 @@ export function Client(options: ClientOptions) {
   const teams = teamsEndpoints(client);
 
   return {
+    api: client,
     events,
     programs,
     seasons,
