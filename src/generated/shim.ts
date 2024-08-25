@@ -1,4 +1,5 @@
 import { paths, components, operations } from "./robotevents.js";
+import type { Round } from "../types.js";
 export { paths, operations };
 
 export type Event = components["schemas"]["Event"];
@@ -12,7 +13,9 @@ export type Locations = components["schemas"]["Locations"];
 export type Division = components["schemas"]["Division"];
 export type Grade = components["schemas"]["Grade"];
 export type Team = components["schemas"]["Team"];
-export type MatchObj = components["schemas"]["MatchObj"];
+export type MatchObj = Omit<components["schemas"]["MatchObj"], "round"> & {
+  round: Round;
+};
 export type Alliance = components["schemas"]["Alliance"];
 export type Color = components["schemas"]["Alliance"]["color"];
 export type AllianceTeam = components["schemas"]["AllianceTeam"];

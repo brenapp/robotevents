@@ -20,7 +20,6 @@ export type {
   Season,
   Error,
 } from "./generated/shim.js";
-import { Error as APIError } from "./generated/shim.js";
 
 export const rounds = {
   Practice: 1,
@@ -110,12 +109,8 @@ export const seasons = {
     "2010-2011": 10,
     "2009-2010": 4,
   },
-  [programs.VAIRC]: {
-    "2023-2024": 185,
-    "2021-2022": 171,
-  },
   [programs.WORKSHOP]: {
-    "2023-2024": 118,
+    "2024-2025": 118,
     "2015-2016": 113,
     "2014-2015": 107,
     "2013-2014": 98,
@@ -159,11 +154,14 @@ export const seasons = {
     "2020-2021": 141,
     "2019-2020": 135,
   },
-  [programs.VRAD]: {},
-  [programs.BellAVR]: {},
   [programs.FAC]: {
     "2023-2024": 188,
     "2022-2023": 177,
     "2021-2022": 165,
+  },
+  [programs.VAIRC]: {
+    "2024-2025": 194,
+    "2023-2024": 185,
+    "2021-2022": 171,
   },
 } as const;
