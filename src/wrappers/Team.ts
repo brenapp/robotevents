@@ -83,7 +83,7 @@ export class Team implements TeamData {
    * @returns List of events
    */
   events(
-    query: operations["team_getEvents"]["parameters"]["query"],
+    query?: operations["team_getEvents"]["parameters"]["query"],
     options?: Omit<RequestInit, "body" | "headers">
   ) {
     return transformResponse(
@@ -101,7 +101,7 @@ export class Team implements TeamData {
    * @returns List of matches
    */
   matches(
-    query: operations["team_getMatches"]["parameters"]["query"],
+    query?: operations["team_getMatches"]["parameters"]["query"],
     options?: Omit<RequestInit, "body" | "headers">
   ) {
     return transformResponse(
@@ -119,7 +119,7 @@ export class Team implements TeamData {
    * @returns List of rankings
    */
   rankings(
-    query: operations["team_getRankings"]["parameters"]["query"],
+    query?: operations["team_getRankings"]["parameters"]["query"],
     options?: Omit<RequestInit, "body" | "headers">
   ) {
     return this.client.PaginatedGET("/teams/{id}/rankings", {
@@ -134,11 +134,11 @@ export class Team implements TeamData {
    * @returns List of skills runs
    */
   skills(
-    query: operations["team_getSkills"]["parameters"]["query"],
+    query?: operations["team_getSkills"]["parameters"]["query"],
     options?: Omit<RequestInit, "body" | "headers">
   ) {
     return this.client.PaginatedGET("/teams/{id}/skills", {
-      params: { path: { id: this.id }, query },
+      params: { path: { id: this.id }, query, ...options },
     });
   }
 
@@ -148,7 +148,7 @@ export class Team implements TeamData {
    * @returns List of awards
    */
   awards(
-    query: operations["team_getAwards"]["parameters"]["query"],
+    query?: operations["team_getAwards"]["parameters"]["query"],
     options?: Omit<RequestInit, "body" | "headers">
   ) {
     return this.client.PaginatedGET("/teams/{id}/awards", {

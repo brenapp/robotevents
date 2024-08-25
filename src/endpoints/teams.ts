@@ -22,7 +22,7 @@ export function teamsEndpoints(client: Client) {
      * @returns List of teams
      **/
     async search(
-      query: operations["team_getTeams"]["parameters"]["query"],
+      query?: operations["team_getTeams"]["parameters"]["query"],
       options?: Omit<RequestInit, "body" | "headers">
     ) {
       return transformResponse(

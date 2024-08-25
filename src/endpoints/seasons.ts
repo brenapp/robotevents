@@ -25,7 +25,7 @@ export function seasonsEndpoint(client: Client) {
      * @returns List of seasons
      */
     async all(
-      query: operations["season_getSeasons"]["parameters"]["query"],
+      query?: operations["season_getSeasons"]["parameters"]["query"],
       options?: Omit<RequestInit, "body" | "headers">
     ) {
       return client.PaginatedGET("/seasons", { params: { query }, ...options });
@@ -38,7 +38,7 @@ export function seasonsEndpoint(client: Client) {
      **/
     async events(
       id: number,
-      query: operations["season_getEvents"]["parameters"]["query"],
+      query?: operations["season_getEvents"]["parameters"]["query"],
       options?: Omit<RequestInit, "body" | "headers">
     ) {
       return transformResponse(

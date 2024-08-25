@@ -11,7 +11,7 @@ export function eventsEndpoint(client: Client) {
      * @returns Paginated List of Events
      */
     async search(
-      query: operations["event_getEvents"]["parameters"]["query"],
+      query?: operations["event_getEvents"]["parameters"]["query"],
       options?: Omit<RequestInit, "body" | "headers">
     ) {
       return client.PaginatedGET("/events", { query, ...options });

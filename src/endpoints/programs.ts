@@ -27,7 +27,7 @@ export function programsEndpoints(client: Client) {
      * @returns List of programs
      */
     async all(
-      query: operations["program_getPrograms"]["parameters"]["query"],
+      query?: operations["program_getPrograms"]["parameters"]["query"],
       options?: Omit<RequestInit, "body" | "headers">
     ) {
       return client.PaginatedGET("/programs", {
