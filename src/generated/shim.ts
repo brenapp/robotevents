@@ -1,28 +1,15 @@
-export type {
-  Event as EventData,
-  EventType,
-  Program,
-  EventLevel,
-  Location,
-  Coordinates,
-  Locations,
-  Division,
-  Grade,
-  Team as TeamData,
-  MatchObj as MatchData,
-  Alliance,
-  AllianceTeam,
-  Ranking,
-  Skill,
-  SkillType,
-  Award,
-  TeamAwardWinner,
-  Season,
-  Error,
-} from "./generated/shim.js";
+import { paths, components, operations } from "./robotevents.js";
+export { paths, operations };
 
-export { Round } from "./wrappers/Match.js";
+export type IdInfo<T> = {
+  id: number;
+  name: string;
+  code?: T | null;
+};
 
+/**
+ * Programs & Seasons
+ **/
 export const programs = {
   V5RC: 1,
   VURC: 4,
@@ -160,3 +147,50 @@ export const seasons: {
     "2021-2022": 165,
   },
 };
+
+/**
+ * Re-export (and fix) components
+ **/
+export type Program = IdInfo<ProgramAbbr>;
+type SpecifyProgramIdInfo<T> = Omit<T, "program"> & {
+  program: Program;
+};
+
+export type Event = SpecifyProgramIdInfo<components["schemas"]["Event"]>;
+export type EventType = components["schemas"]["EventType"];
+export type EventLevel = components["schemas"]["EventLevel"];
+export type Location = components["schemas"]["Location"];
+export type Coordinates = components["schemas"]["Coordinates"];
+export type Locations = components["schemas"]["Locations"];
+export type Division = components["schemas"]["Division"];
+export type Grade = components["schemas"]["Grade"];
+export type Team = SpecifyProgramIdInfo<components["schemas"]["Team"]>;
+export type MatchObj = components["schemas"]["MatchObj"];
+export type Alliance = components["schemas"]["Alliance"];
+export type AllianceTeam = components["schemas"]["AllianceTeam"];
+export type Ranking = components["schemas"]["Ranking"];
+export type Skill = components["schemas"]["Skill"];
+export type SkillType = components["schemas"]["SkillType"];
+export type Award = components["schemas"]["Award"];
+export type TeamAwardWinner = components["schemas"]["TeamAwardWinner"];
+export type Season = components["schemas"]["Season"];
+export type Error = components["schemas"]["Error"];
+
+export type PageMeta = components["schemas"]["PageMeta"];
+export type Paginated<T> = {
+  meta?: PageMeta;
+  data: T[];
+};
+export type PaginatedTeam = Paginated<Team>;
+export type PaginatedEvent = Paginated<Event>;
+export type PaginatedAward = Paginated<Award>;
+export type PaginatedSeason = Paginated<Season>;
+export type PaginatedRanking = Paginated<Ranking>;
+export type PaginatedMatch = Paginated<MatchObj>;
+export type PaginatedSkill = Paginated<Skill>;
+export type PaginatedProgram = Paginated<Program>;
+
+/**
+ * Matches
+ **/
+export { Round } from "../wrappers/Match.js";
