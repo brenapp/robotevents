@@ -14,7 +14,10 @@ export function eventsEndpoint(client: Client) {
       query?: operations["event_getEvents"]["parameters"]["query"],
       options?: Omit<RequestInit, "body" | "headers">
     ) {
-      return client.PaginatedGET("/events", { params: { query }, ...options });
+      return transformResponse(
+        client.PaginatedGET("/events", { params: { query }, ...options }),
+        (data) => data.map((event) => new Event(event, client))
+      );
     },
 
     /**
