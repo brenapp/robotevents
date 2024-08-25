@@ -14,6 +14,7 @@ export type Grade = components["schemas"]["Grade"];
 export type Team = components["schemas"]["Team"];
 export type MatchObj = components["schemas"]["MatchObj"];
 export type Alliance = components["schemas"]["Alliance"];
+export type Color = components["schemas"]["Alliance"]["color"];
 export type AllianceTeam = components["schemas"]["AllianceTeam"];
 export type Ranking = components["schemas"]["Ranking"];
 export type Skill = components["schemas"]["Skill"];
