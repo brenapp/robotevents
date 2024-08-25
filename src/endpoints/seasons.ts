@@ -1,40 +1,53 @@
-import {
-  EndpointOptions,
-  ProgramCode,
-  programs,
-  seasons,
-  Year,
-} from "../types.js";
-import { Seasons } from "../generated/robotevents.js";
+import { operations } from "../generated/shim.js";
+import { Client, transformResponse } from "../utils/client.js";
+import { seasons } from "../types.js";
+import { Event } from "../wrappers/Event.js";
 
-export function createSeasonsEndpoints({
-  fetch,
-  paginatedFetch,
-}: EndpointOptions) {
+export function seasonsEndpoint(client: Client) {
   return {
     ...seasons,
-    async get(id: number) {
-      return fetch<
-        Seasons.SeasonGetSeason.ResponseBody,
-        Seasons.SeasonGetSeason.RequestQuery
-      >(`/seasons/${id}`);
+
+    /**
+     * Get details about a season
+     * @param id Season ID
+     * @returns Details about the season
+     */
+    async get(id: number, options?: Omit<RequestInit, "body" | "headers">) {
+      return client.GET("/seasons/{id}", {
+        params: { path: { id } },
+        ...options,
+      });
     },
 
-    current(program: ProgramCode, year: Year = "2024-2025") {
-      return seasons[program][year];
+    /**
+     * Get a list of seasons
+     * @param options Query Params
+     * @returns List of seasons
+     */
+    async all(
+      query?: operations["season_getSeasons"]["parameters"]["query"],
+      options?: Omit<RequestInit, "body" | "headers">
+    ) {
+      return client.PaginatedGET("/seasons", { params: { query }, ...options });
     },
 
-    async all(options?: Seasons.SeasonGetSeasons.RequestQuery) {
-      return paginatedFetch<
-        Seasons.SeasonGetSeasons.ResponseBody,
-        Seasons.SeasonGetSeasons.RequestQuery
-      >("/seasons", options ?? {});
-    },
-    async events(id: number, options?: Seasons.SeasonGetEvents.RequestQuery) {
-      return paginatedFetch<
-        Seasons.SeasonGetEvents.ResponseBody,
-        Seasons.SeasonGetEvents.RequestQuery
-      >(`/seasons/${id}/events`, options ?? {});
+    /**
+     * Get events for a season
+     * @param id Season ID
+     * @returns List of events
+     **/
+    async events(
+      id: number,
+      query?: operations["season_getEvents"]["parameters"]["query"],
+      options?: Omit<RequestInit, "body" | "headers">
+    ) {
+      return transformResponse(
+        client.PaginatedGET("/seasons/{id}/events", {
+          params: { path: { id }, query },
+          ...options,
+        }),
+        (data) => data.map((event) => new Event(event, client))
+      );
     },
   };
 }

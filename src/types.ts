@@ -1,5 +1,3 @@
-import { PageMeta } from "./generated/robotevents.js";
-
 export type {
   Event as EventData,
   EventType,
@@ -21,19 +19,20 @@ export type {
   TeamAwardWinner,
   Season,
   Error,
-  AllianceColorEnum as Color,
-  AwardDesignationEnum as AwardDesignation,
-  AwardClassificationEnum as AwardClassificationEnum,
-} from "./generated/robotevents.js";
+} from "./generated/shim.js";
+import { Error as APIError } from "./generated/shim.js";
 
-export type {
-  Events as EventsEndpoints,
-  Teams as TeamsEndpoints,
-  Programs as ProgramsEndpoints,
-  Seasons as SeasonsEndpoints,
-} from "./generated/robotevents.js";
-
-export { Round } from "./wrappers/Match.js";
+export const rounds = {
+  Practice: 1,
+  Qualification: 2,
+  Quarterfinals: 3,
+  Semifinals: 4,
+  Finals: 5,
+  RoundOf16: 6,
+  TopN: 15,
+  RoundRobin: 16,
+} as const;
+export type Round = (typeof rounds)[keyof typeof rounds];
 
 export const programs = {
   V5RC: 1,
@@ -74,11 +73,7 @@ export const years = [
 
 export type Year = (typeof years)[number];
 
-export const seasons: {
-  [P in ProgramCode]: {
-    [Y in Year]?: number;
-  };
-} = {
+export const seasons = {
   [programs.V5RC]: {
     "2024-2025": 190,
     "2023-2024": 181,
@@ -171,67 +166,4 @@ export const seasons: {
     "2022-2023": 177,
     "2021-2022": 165,
   },
-};
-
-export type WithRequiredId<T> = T extends { id?: unknown }
-  ? Omit<T, "id"> & Required<Pick<T, "id">>
-  : T;
-
-export type IdInfo<T> = {
-  id: number;
-  name: string;
-  code?: T | null;
-};
-
-export type ClientOptions = {
-  authorization: {
-    token: string;
-  };
-  request?: {
-    customFetch?: typeof fetch;
-    baseURL?: string;
-    baseRequest?: RequestInit;
-  };
-};
-
-export type SuccessfulResponse<T> = {
-  success: true;
-  data: T;
-};
-
-export type FailedResponse = {
-  success: false;
-  error: unknown;
-};
-
-export type FetcherQueryParams = Record<
-  string,
-  string | number | boolean | string[] | number[] | boolean[]
->;
-
-export type FetcherResponse<T> = SuccessfulResponse<T> | FailedResponse;
-
-export type Fetcher = <T, Q extends FetcherQueryParams>(
-  endpoint: string,
-  query?: Q,
-  options?: RequestInit
-) => Promise<FetcherResponse<WithRequiredId<T>>>;
-
-export type PaginatedData<T> = {
-  meta?: PageMeta;
-  data?: T[];
-};
-
-export type PaginatedFetch = <
-  T extends PaginatedData<unknown>,
-  Q extends FetcherQueryParams,
->(
-  endpoint: string,
-  query?: Q,
-  options?: RequestInit
-) => Promise<FetcherResponse<T["data"]>>;
-
-export type EndpointOptions = {
-  fetch: Fetcher;
-  paginatedFetch: PaginatedFetch;
-};
+} as const;

@@ -1,23 +1,32 @@
-import { createProgramsEndpoint } from "./endpoints/programs.js";
-import { createSeasonsEndpoints } from "./endpoints/seasons.js";
-import { createTeamsEndpoint } from "./endpoints/teams.js";
-import { createEventsEndpoint } from "./endpoints/events.js";
-
-import { makeEndpointOptions } from "./utils/makeEndpointOptions.js";
-import type { ClientOptions, EndpointOptions } from "./types.ts";
+export * from "./generated/shim.js";
 export * from "./types.js";
 
 export { Team } from "./wrappers/Team.js";
 export { Event } from "./wrappers/Event.js";
 export { Match } from "./wrappers/Match.js";
 
+import { createClient, type ClientOptions } from "./utils/client.js";
+export { ClientOptions } from "./utils/client.js";
+
+import { eventsEndpoint } from "./endpoints/events.js";
+import { programsEndpoints } from "./endpoints/programs.js";
+import { seasonsEndpoint } from "./endpoints/seasons.js";
+import { teamsEndpoints } from "./endpoints/teams.js";
+
 export function Client(options: ClientOptions) {
-  const api: EndpointOptions = makeEndpointOptions(options);
+  const client = createClient(options);
+
+  const events = eventsEndpoint(client);
+  const programs = programsEndpoints(client);
+  const seasons = seasonsEndpoint(client);
+  const teams = teamsEndpoints(client);
+
   return {
-    api,
-    programs: createProgramsEndpoint(api),
-    seasons: createSeasonsEndpoints(api),
-    teams: createTeamsEndpoint(api),
-    events: createEventsEndpoint(api),
+    events,
+    programs,
+    seasons,
+    teams,
   };
 }
+
+export type RobotEventsClient = ReturnType<typeof Client>;

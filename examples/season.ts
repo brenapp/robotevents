@@ -1,4 +1,4 @@
-import { Client, programs } from "../out/main.js";
+import { Client, ProgramCode, programs } from "../out/main.js";
 
 const client = Client({
   authorization: {
@@ -7,8 +7,27 @@ const client = Client({
   },
 });
 
-const result = await client.programs.get(programs.V5RC);
-console.log(result.data);
+const seasons = await client.seasons.all();
+let output: Record<ProgramCode, Record<string, number>> = {
+  [programs.V5RC]: {},
+  [programs.VIQRC]: {},
+  [programs.VURC]: {},
+  [programs.ADC]: {},
+  [programs.BellAVR]: {},
+  [programs.FAC]: {},
+  [programs.NRL]: {},
+  [programs.TVRC]: {},
+  [programs.TVIQRC]: {},
+  [programs.VAIRC]: {},
+  [programs.VRAD]: {},
+  [programs.WORKSHOP]: {},
+};
+if (seasons.data) {
+  for (const season of seasons.data) {
+    output[season.program!.id as ProgramCode][
+      `${season.years_start}-${season.years_end}`
+    ] = season.id!;
+  }
+}
 
-const events = await client.events.search({ "sku[]": ["RE-VRC-23-1488"] });
-console.log(events.data);
+console.log(JSON.stringify(output, null, 2));

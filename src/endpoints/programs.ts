@@ -1,19 +1,39 @@
-import { EndpointOptions, Program } from "../types.js";
-import { Programs } from "../generated/robotevents.js";
+import { operations } from "../generated/shim.js";
+import { Client } from "../utils/client.js";
+import { ProgramCode, programs } from "../types.js";
 
-export function createProgramsEndpoint({ fetch }: EndpointOptions) {
+export function programsEndpoints(client: Client) {
   return {
-    async get(id: number) {
-      return fetch<
-        Programs.ProgramGetProgram.ResponseBody,
-        Programs.ProgramGetProgram.RequestQuery
-      >(`/programs/${id}`);
+    ...programs,
+
+    /**
+     * Get details about a program
+     * @param id Program ID
+     * @returns Details about the program
+     */
+    async get(
+      id: ProgramCode,
+      options?: Omit<RequestInit, "body" | "headers">
+    ) {
+      return client.GET("/programs/{id}", {
+        params: { path: { id } },
+        ...options,
+      });
     },
-    async all(options: Programs.ProgramGetPrograms.RequestQuery) {
-      return fetch<
-        Programs.ProgramGetProgram.ResponseBody,
-        Programs.ProgramGetPrograms.RequestQuery
-      >("/programs", options);
+
+    /**
+     * Get a list of programs
+     * @param options Query Params
+     * @returns List of programs
+     */
+    async all(
+      query?: operations["program_getPrograms"]["parameters"]["query"],
+      options?: Omit<RequestInit, "body" | "headers">
+    ) {
+      return client.PaginatedGET("/programs", {
+        params: { query },
+        ...options,
+      });
     },
   };
 }

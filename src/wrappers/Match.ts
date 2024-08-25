@@ -1,41 +1,38 @@
-import { Alliance, Color, IdInfo, MatchData } from "../types.js";
-
-export enum Round {
-  Practice = 1,
-  Qualification = 2,
-  Quarterfinals = 3,
-  Semifinals = 4,
-  Finals = 5,
-  RoundOf16 = 6,
-  TopN = 15,
-  RoundRobin = 16,
-}
+import { components } from "../generated/robotevents.js";
+import { Color, IdInfo } from "../main.js";
+import { Alliance, MatchData, rounds } from "../types.js";
 
 export class Match implements MatchData {
-  id = 0;
-  event = {
-    id: 0,
-    name: "",
-    code: "",
-  };
-  division = {
-    id: 0,
-    name: "",
-    code: "",
-  };
-  round = Round.Qualification;
-  instance = 0;
-  matchnum = 0;
-  scheduled = "";
-  started = "";
-  field = "";
-  scored = false;
-  name = "";
-  alliances: Alliance[] = [];
-
   constructor(data: MatchData) {
-    Object.assign(this, data);
+    this.id = data.id;
+    this.event = data.event;
+    this.division = data.division;
+    this.round = data.round;
+    this.instance = data.instance;
+    this.matchnum = data.matchnum;
+    this.scheduled = data.scheduled;
+    this.started = data.started;
+    this.field = data.field;
+    this.scored = data.scored;
+    this.name = data.name;
+    this.alliances = data.alliances;
   }
+  id: number;
+  event: { id: number; name: string; code?: string | null };
+  division: { id: number; name: string; code?: string | null };
+  round: number;
+  instance: number;
+  matchnum: number;
+  scheduled?: string | undefined;
+  started?: string | undefined;
+  field?: string | undefined;
+  scored: boolean;
+  name: string;
+  alliances: {
+    color: "red" | "blue";
+    score: number;
+    teams: components["schemas"]["AllianceTeam"][];
+  }[];
 
   getData(): MatchData {
     return {
@@ -103,7 +100,7 @@ export class Match implements MatchData {
   teamOutcome(team: string): "win" | "loss" | "tie" | "unscored" {
     const { winner, loser } = this.allianceOutcome();
 
-    if (!this.scored) {
+    if (!this.scored && !winner && !loser) {
       return "unscored";
     }
 
@@ -111,9 +108,9 @@ export class Match implements MatchData {
       return "tie";
     }
 
-    if (winner.teams.find((t) => t.team?.code === team)) {
+    if (winner.teams.find((t) => t.team?.name === team)) {
       return "win";
-    } else if (loser.teams.find((t) => t.team?.code === team)) {
+    } else if (loser.teams.find((t) => t.team?.name === team)) {
       return "loss";
     } else {
       return "tie";
@@ -125,7 +122,7 @@ export class Match implements MatchData {
    * do not play, very rare in modern competitions)
    * @returns List of all teams in the match
    */
-  teams(): IdInfo<string>[] {
+  teams(): IdInfo[] {
     return this.alliances.flatMap((a) =>
       a.teams.filter((t) => !t.sitting).map((t) => t.team!)
     );
@@ -149,28 +146,28 @@ export class Match implements MatchData {
   shortName(): string {
     const id = this.instance + "-" + this.matchnum;
     switch (this.round) {
-      case Round.Practice: {
+      case rounds.Practice: {
         return "P " + this.matchnum;
       }
-      case Round.Qualification: {
+      case rounds.Qualification: {
         return "Q " + this.matchnum;
       }
-      case Round.Quarterfinals: {
+      case rounds.Quarterfinals: {
         return "QF " + id;
       }
-      case Round.Semifinals: {
+      case rounds.Semifinals: {
         return "SF " + id;
       }
-      case Round.Finals: {
+      case rounds.Finals: {
         return "F " + id;
       }
-      case Round.RoundOf16: {
+      case rounds.RoundOf16: {
         return "R16 " + id;
       }
-      case Round.TopN: {
+      case rounds.TopN: {
         return "F " + this.matchnum;
       }
-      case Round.RoundRobin: {
+      case rounds.RoundRobin: {
         return "RR " + id;
       }
       default: {

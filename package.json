@@ -1,6 +1,6 @@
 {
   "name": "robotevents",
-  "version": "5.1.4",
+  "version": "6.0.0",
   "description": "Programmatically access the RobotEvents API",
   "type": "module",
   "exports": "./out/main.js",
@@ -21,17 +21,17 @@
     "yarn.lock"
   ],
   "dependencies": {
-    "@types/cookie": "^0.4.0",
-    "@types/set-cookie-parser": "^0.0.6",
-    "cross-fetch": "^3.1.5",
-    "typedoc": "^0.17.8"
+    "openapi-fetch": "^0.11.1"
   },
   "directories": {
     "bin": "./out",
     "lib": "./src"
   },
   "devDependencies": {
-    "swagger-typescript-api": "^13.0.16",
+    "@types/cookie": "^0.4.0",
+    "@types/set-cookie-parser": "^0.0.6",
+    "openapi-ts": "^0.3.4",
+    "openapi-typescript-helpers": "^0.0.12",
     "typescript": "^5.3.3",
     "vitest": "^2.0.5"
   }

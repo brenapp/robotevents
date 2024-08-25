@@ -1,50 +1,59 @@
-import { Events } from "../generated/robotevents.js";
-import { EndpointOptions, FetcherResponse } from "../types.js";
+import { operations } from "../generated/shim.js";
+import { Client, transformResponse } from "../utils/client.js";
 import { Event } from "../wrappers/Event.js";
 
-export function createEventsEndpoint(api: EndpointOptions) {
+export function eventsEndpoint(client: Client) {
   return {
+    /**
+     * Get a list of events
+     * @param query Event Search Options
+     * @param options Request Options, passed to fetch
+     * @returns Paginated List of Events
+     */
     async search(
-      options: Events.EventGetEvents.RequestQuery
-    ): Promise<FetcherResponse<Event[]>> {
-      const response = await api.paginatedFetch<
-        Events.EventGetEvents.ResponseBody,
-        Events.EventGetEvents.RequestQuery
-      >("/events", options);
-
-      if (!response.success) {
-        return response;
-      }
-
-      const data = response.data?.map((data) => new Event(data, api)) ?? [];
-      return { success: true, data };
+      query?: operations["event_getEvents"]["parameters"]["query"],
+      options?: Omit<RequestInit, "body" | "headers">
+    ) {
+      return transformResponse(
+        client.PaginatedGET("/events", { params: { query }, ...options }),
+        (data) => data.map((event) => new Event(event, client))
+      );
     },
 
-    async getBySKU(sku: string): Promise<FetcherResponse<Event | null>> {
-      const response = await api.paginatedFetch<
-        Events.EventGetEvents.ResponseBody,
-        Events.EventGetEvents.RequestQuery
-      >("/events", { "sku[]": [sku] });
-
-      if (!response.success) {
-        return response;
-      }
-
-      const event = response.data?.[0];
-      return { success: true, data: event ? new Event(event, api) : null };
+    /**
+     * Get an event by ID
+     * @param id Event ID (not SKU)
+     * @returns Event
+     */
+    async get(id: number, options?: Omit<RequestInit, "body" | "headers">) {
+      return transformResponse(
+        client.GET("/events/{id}", {
+          params: { path: { id } },
+          ...options,
+        }),
+        (data) => new Event(data, client)
+      );
     },
 
-    async get(id: number): Promise<FetcherResponse<Event | null>> {
-      const response = await api.fetch<
-        Events.EventGetEvent.ResponseBody,
-        Events.EventGetEvent.RequestQuery
-      >(`/events/${id}`);
-
-      if (!response.success) {
-        return response;
-      }
-
-      return { success: true, data: new Event(response.data, api) };
+    /**
+     * Get an event by SKU
+     * @param id Event SKU
+     * @returns Event
+     */
+    async getBySKU(
+      sku: string,
+      options?: Omit<RequestInit, "body" | "headers">
+    ) {
+      return transformResponse(
+        client.GET("/events", {
+          params: { query: { "sku[]": [sku] } },
+          ...options,
+        }),
+        (data) => {
+          const event = data.data?.[0];
+          return event ? new Event(event, client) : null;
+        }
+      );
     },
   };
 }
