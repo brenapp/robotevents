@@ -120,7 +120,10 @@ export function createClient(options: ClientOptions): Client {
     const queryBase = init.params?.query ?? {};
     const first = await base.GET(path, {
       ...init,
-      params: { query: { ...queryBase, page: 1, per_page: 250 } },
+      params: {
+        ...init.params,
+        query: { ...queryBase, page: 1, per_page: 250 },
+      },
     });
 
     if (first.error) {
@@ -141,7 +144,10 @@ export function createClient(options: ClientOptions): Client {
     for (let page = 2; page <= last; page++) {
       const next = await base.GET(path, {
         ...init,
-        params: { query: { ...queryBase, page, per_page: 250 } },
+        params: {
+          ...init.params,
+          query: { ...queryBase, page, per_page: 250 },
+        },
       });
 
       if (next.error) {
