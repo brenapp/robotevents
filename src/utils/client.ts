@@ -1,4 +1,9 @@
-import { FilterKeys, PathsWithMethod } from "openapi-typescript-helpers";
+import {
+  ErrorResponse,
+  FilterKeys,
+  PathsWithMethod,
+  ResponseObjectMap,
+} from "openapi-typescript-helpers";
 import type { Paginated, paths } from "../generated/shim.js";
 
 import createOpenAPIClient, {
@@ -167,6 +172,23 @@ export function createClient(options: ClientOptions): Client {
   return { ...base, PaginatedGET };
 }
 
+export type TransformedFetchResponse<
+  T,
+  K,
+  M extends `${string}/${string}`,
+  N
+> =
+  | {
+      data: N;
+      error?: never;
+      response: Response;
+    }
+  | {
+      data?: never;
+      error: ErrorResponse<ResponseObjectMap<T>, M>;
+      response: Response;
+    };
+
 export async function transformResponse<
   T,
   K,
@@ -177,8 +199,8 @@ export async function transformResponse<
   transform: (
     data: NonNullable<FetchResponse<T, K, M>["data"]>,
     response: FetchResponse<T, K, M>
-  ) => N | Promise<N>[]
-): Promise<FetchResponse<N, K, M>> {
+  ) => N | Promise<N>
+): Promise<TransformedFetchResponse<T, K, M, N>> {
   const resp = await response;
 
   if (resp.error) {
@@ -189,8 +211,6 @@ export async function transformResponse<
     return { response: resp.response, data: undefined, error: undefined };
   }
 
-  const data = (await transform(resp.data, resp)) as NonNullable<
-    FetchResponse<N, K, M>["data"]
-  >;
+  const data = await transform(resp.data, resp);
   return { response: resp.response, data, error: undefined };
 }
