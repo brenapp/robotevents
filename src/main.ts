@@ -28,3 +28,5 @@ export function Client(options: ClientOptions) {
     teams,
   };
 }
+
+export type RobotEventsClient = ReturnType<typeof Client>;
