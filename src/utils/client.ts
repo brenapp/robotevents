@@ -96,6 +96,15 @@ export function createClient(options: ClientOptions): Client {
     ...options.request,
   });
 
+  // base.use({
+  //   onRequest(options) {
+  //     console.log("REQUEST", options);
+  //   },
+  //   onResponse(response) {
+  //     console.log("RESPONSE", response);
+  //   },
+  // });
+
   const PaginatedGET: ClientCustomMethods["PaginatedGET"] = async <
     Path extends PaginatablePaths,
     Init extends FetchOptions<FilterKeys<paths[Path], "get">>
@@ -103,9 +112,10 @@ export function createClient(options: ClientOptions): Client {
     path: Path,
     init: Init
   ) => {
+    const queryBase = init.params?.query ?? {};
     const first = await base.GET(path, {
       ...init,
-      params: { query: { ...init.params?.query, page: 1, per_page: 250 } },
+      params: { query: { ...queryBase, page: 1, per_page: 250 } },
     });
 
     if (first.error) {
@@ -126,7 +136,7 @@ export function createClient(options: ClientOptions): Client {
     for (let page = 2; page <= last; page++) {
       const next = await base.GET(path, {
         ...init,
-        params: { query: { ...init.params?.query, page, per_page: 250 } },
+        params: { query: { ...queryBase, page, per_page: 250 } },
       });
 
       if (next.error) {
