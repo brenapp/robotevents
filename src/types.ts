@@ -20,8 +20,19 @@ export type {
   Season,
   Error,
 } from "./generated/shim.js";
+import { Error as APIError } from "./generated/shim.js";
 
-export { Round } from "./wrappers/Match.js";
+export const rounds = {
+  Practice: 1,
+  Qualification: 2,
+  Quarterfinals: 3,
+  Semifinals: 4,
+  Finals: 5,
+  RoundOf16: 6,
+  TopN: 15,
+  RoundRobin: 16,
+} as const;
+export type Round = (typeof rounds)[keyof typeof rounds];
 
 export const programs = {
   V5RC: 1,
