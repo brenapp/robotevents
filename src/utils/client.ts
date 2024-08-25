@@ -117,51 +117,57 @@ export function createClient(options: ClientOptions): Client {
     path: Path,
     init: Init
   ) => {
-    const queryBase = init.params?.query ?? {};
-    const first = await base.GET(path, {
-      ...init,
-      params: {
-        ...init.params,
-        query: { ...queryBase, page: 1, per_page: 250 },
-      },
-    });
-
-    if (first.error) {
-      return { response: first.response, error: first.error };
-    }
-
-    const firstData = first.data as Paginated<
-      UnwrappedPaginatedPathTypes[Path]
-    >;
+    let page = 1;
+    let per_page = 250;
+    let total = 0;
+    let totalPages = 0;
 
     const data: UnwrappedPaginatedPathTypes[Path] = [];
 
-    if (firstData.data) {
-      data.push(...firstData.data);
-    }
-
-    const last = firstData.meta?.last_page ?? 0;
-    for (let page = 2; page <= last; page++) {
-      const next = await base.GET(path, {
+    const queryBase = init.params?.query ?? {};
+    do {
+      const request = await base.GET(path, {
         ...init,
         params: {
           ...init.params,
-          query: { ...queryBase, page, per_page: 250 },
+          query: { ...queryBase, page, per_page },
         },
       });
 
-      if (next.error) {
-        return { response: next.response, error: next.error };
+      if (request.error) {
+        return { response: request.response, error: request.error };
       }
 
-      const nextData = next.data as Paginated<
+      const requestData = request.data as Paginated<
         UnwrappedPaginatedPathTypes[Path]
       >;
 
-      if (nextData.data) {
-        data.push(...nextData.data);
+      if (requestData.data) {
+        data.push(...requestData.data);
       }
-    }
+
+      if (requestData.meta) {
+        total = requestData.meta.total ?? 0;
+        totalPages = requestData.meta.last_page ?? 0;
+      }
+
+      const nextPageUrl = requestData.meta?.next_page_url;
+      if (!nextPageUrl) {
+        break;
+      }
+
+      const nextPage = new URL(nextPageUrl).searchParams.get("page");
+
+      if (!nextPage) {
+        break;
+      }
+
+      page = Number.parseInt(nextPage);
+
+      if (!page || Number.isNaN(page)) {
+        break;
+      }
+    } while (data.length < total && page <= totalPages);
 
     return {
       response: new Response(),

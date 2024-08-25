@@ -41,7 +41,7 @@ test("client.events.get", async () => {
 });
 
 test("client.events.getBySKU", async () => {
-  const response = await client.events.getBySKU("RE-VRC-23-1488");
+  let response = await client.events.getBySKU("RE-VRC-23-1488");
 
   expect(response.error).toBeUndefined();
   expect(response.response.ok).toBeTruthy();
@@ -52,4 +52,11 @@ test("client.events.getBySKU", async () => {
   expect(event?.getURL()).toBe(
     "https://www.robotevents.com/RE-VRC-23-1488.html"
   );
+
+  // Invalid SKU
+  response = await client.events.getBySKU("INVALID");
+
+  expect(response.error).toBeUndefined();
+  expect(response.response.ok).toBeTruthy();
+  expect(response.data).toBeNull();
 });

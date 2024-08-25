@@ -26,6 +26,16 @@ test("client.teams.getByNumber", async () => {
   expect(team).toBeDefined();
   expect(team?.number).toBe("3796B");
   expect(team?.getURL()).toBe("https://www.robotevents.com/teams/V5RC/3796B");
+
+  // Invalid Team
+
+  const invalid = await client.teams.getByNumber(
+    "INVALID",
+    client.programs.V5RC
+  );
+  expect(invalid.error).toBeUndefined();
+  expect(invalid.response.ok).toBeTruthy();
+  expect(invalid.data).toBeNull();
 });
 
 test("client.teams.search", async () => {
