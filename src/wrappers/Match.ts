@@ -100,7 +100,7 @@ export class Match implements MatchData {
   teamOutcome(team: string): "win" | "loss" | "tie" | "unscored" {
     const { winner, loser } = this.allianceOutcome();
 
-    if (!this.scored) {
+    if (!this.scored && !winner && !loser) {
       return "unscored";
     }
 
@@ -108,9 +108,9 @@ export class Match implements MatchData {
       return "tie";
     }
 
-    if (winner.teams.find((t) => t.team?.code === team)) {
+    if (winner.teams.find((t) => t.team?.name === team)) {
       return "win";
-    } else if (loser.teams.find((t) => t.team?.code === team)) {
+    } else if (loser.teams.find((t) => t.team?.name === team)) {
       return "loss";
     } else {
       return "tie";
