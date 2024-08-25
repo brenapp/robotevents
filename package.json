@@ -12,7 +12,7 @@
     "examples"
   ],
   "scripts": {
-    "prepublishOnly": "rm -rf out && tsc -d",
+    "prepublishOnly": "rm -rf out && tsc -d && vitest run",
     "build": "tsc",
     "test": "vitest"
   },
