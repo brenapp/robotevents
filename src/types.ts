@@ -73,11 +73,7 @@ export const years = [
 
 export type Year = (typeof years)[number];
 
-export const seasons: {
-  [P in ProgramCode]: {
-    [Y in Year]?: number;
-  };
-} = {
+export const seasons = {
   [programs.V5RC]: {
     "2024-2025": 190,
     "2023-2024": 181,
@@ -170,4 +166,4 @@ export const seasons: {
     "2022-2023": 177,
     "2021-2022": 165,
   },
-};
+} as const;
