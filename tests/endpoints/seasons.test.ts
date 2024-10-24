@@ -12,7 +12,9 @@ test("client.seasons.get", async () => {
   const season = response.data;
   expect(season).toBeDefined();
   expect(season?.id).toBe(client.seasons[client.programs.V5RC]["2024-2025"]);
-  expect(season?.name).toBe("V5RC 2024-2025: High Stakes");
+  expect(season?.name).toBe(
+    "VEX V5 Robotics Competition 2024-2025: High Stakes"
+  );
 });
 
 test("client.seasons.all", async () => {
@@ -26,7 +28,9 @@ test("client.seasons.all", async () => {
   const season = response.data?.[0];
   expect(season).toBeDefined();
   expect(season?.id).toBe(client.seasons[client.programs.V5RC]["2024-2025"]);
-  expect(season?.name).toBe("V5RC 2024-2025: High Stakes");
+  expect(season?.name).toBe(
+    "VEX V5 Robotics Competition 2024-2025: High Stakes"
+  );
 });
 
 test("client.seasons.events", async () => {
